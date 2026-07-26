@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: portai
+  profiles:
+    active: local
+

@@ -1,0 +1,5 @@
+src/main/resources/application-local.yml
+*.log
+.DS_Store
+build/
+.gradle/
