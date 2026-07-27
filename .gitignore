@@ -1,0 +1,27 @@
+# 로컬 설정 (실제 credential 포함)
+src/main/resources/application-local.yml
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.iws
+.vscode/
+out/
+
+# Eclipse / STS
+.metadata/
+.classpath
+.project
+.settings/
+bin/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
