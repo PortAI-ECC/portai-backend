@@ -4,6 +4,13 @@ spring:
   profiles:
     active: local
 
+  # DB 접속 정보
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/portai?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: 여기에_본인의_DB_비밀번호를_적어주세요
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -29,3 +36,9 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     operations-sorter: method
+
+# JWT 설정
+jwt:
+  secret: vmfldptmxhzhfhtkfkdgoqnwkdudnjsgkfRjdi12345!@#
+  expiration_time: 1800000 # Access Token 수명: 30분 (1800000밀리초)
+  refresh_expiration_time: 1209600000 # Refresh Token 수명: 14일 (1209600000밀리초)
