@@ -21,6 +21,14 @@ public enum ErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
     SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "세션을 찾을 수 없습니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "가입되지 않은 이메일이거나 사용자를 찾을 수 없습니다."),
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않거나 만료된 토큰입니다."),
+    TOKEN_MISMATCH(HttpStatus.UNAUTHORIZED, "토큰 정보가 일치하지 않습니다."),
+
+    // ===== 기술 스택 (윤지) =====
+    DUPLICATE_TECH_STACK(HttpStatus.BAD_REQUEST, "이미 등록된 기술입니다."),
+    TECH_STACK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 기술 스택을 찾을 수 없거나 권한이 없습니다."),
 
     // ===== 프로젝트 (지호) =====
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "프로젝트를 찾을 수 없습니다."),

@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.portai.global.exception.CustomException;
+import com.portai.global.exception.ErrorCode;
 
 @Service
 @RequiredArgsConstructor
@@ -52,13 +54,13 @@ public class UserService {
     @Transactional
     public AuthResponse login(LoginRequest request) {
 
-        // 1. 이메일로 DB에서 사용자 조회 (없으면 예외 발생)
+        // 1. 이메일로 DB에서 사용자 조회 (없으면 USER_NOT_FOUND)
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        // 2. 비밀번호 일치 여부 검증
+        // 2. 비밀번호 일치 여부 검증 (틀리면 INVALID_PASSWORD)
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
 
         // 3. JwtProvider를 사용해 Access / Refresh 토큰 2개 발급
@@ -96,29 +98,29 @@ public class UserService {
     public AuthResponse refresh(TokenRefreshRequest request) {
         String refreshToken = request.getRefreshToken();
 
-        // 1. 넘어온 리프레시 토큰이 유효한지(위조/만료되지 않았는지) 검사
+        // 1. 넘어온 리프레시 토큰이 유효한지 검사 (위조/만료 시 INVALID_TOKEN)
         if (!jwtProvider.validateToken(refreshToken)) {
-            throw new IllegalArgumentException("유효하지 않거나 만료된 리프레시 토큰입니다. 다시 로그인해주세요.");
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
 
         // 2. 토큰에서 유저 이메일 추출
         String email = jwtProvider.getEmailFromToken(refreshToken);
 
-        // 3. DB에 저장된 리프레시 토큰 꺼내오기
+        // 3. DB에 저장된 리프레시 토큰 꺼내오기 (없으면 SESSION_NOT_FOUND)
         RefreshToken savedToken = refreshTokenRepository.findByUserEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("로그아웃된 사용자입니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
 
-        // 4. 프론트엔드가 보낸 토큰과 DB에 저장된 토큰이 똑같은지 비교
+        // 4. 프론트엔드가 보낸 토큰과 DB에 저장된 토큰이 똑같은지 비교 (다르면 TOKEN_MISMATCH)
         if (!savedToken.getToken().equals(refreshToken)) {
-            throw new IllegalArgumentException("토큰 정보가 일치하지 않습니다.");
+            throw new CustomException(ErrorCode.TOKEN_MISMATCH);
         }
 
         // 5. 모든 검사를 통과했으므로, 새로운 Access Token 발급
         String newAccessToken = jwtProvider.createAccessToken(email);
 
-        // 6. 유저 정보 조회 (응답 상자에 담기 위해)
+        // 6. 유저 정보 조회 (없으면 USER_NOT_FOUND)
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         AuthResponse.UserInfo userInfo = new AuthResponse.UserInfo(
                 user.getId(),
@@ -143,9 +145,9 @@ public class UserService {
     public void logout(LogoutRequest request) {
         String refreshToken = request.getRefreshToken();
 
-        // 1. 넘어온 토큰이 유효한지 검사 (명세서의 Error 조건 처리)
+        // 1. 넘어온 토큰이 유효한지 검사 (위조/만료 시 INVALID_TOKEN)
         if (!jwtProvider.validateToken(refreshToken)) {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
 
         // 2. 토큰에서 유저 이메일 추출
