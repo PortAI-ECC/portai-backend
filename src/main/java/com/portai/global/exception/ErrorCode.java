@@ -41,6 +41,8 @@ public enum ErrorCode {
     // ===== 외부 연동 (지호) =====
     GITHUB_REPO_NOT_FOUND(HttpStatus.NOT_FOUND, "GitHub 저장소를 찾을 수 없습니다."),
     GITHUB_API_ERROR(HttpStatus.BAD_GATEWAY, "GitHub API 호출에 실패했습니다."),
+    INTEGRATION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 연동 정보를 찾을 수 없거나 권한이 없습니다."),
+    DUPLICATE_INTEGRATION(HttpStatus.BAD_REQUEST, "이미 등록된 플랫폼입니다."),
 
     // ===== 활동/포트폴리오 (가현) =====
     ACTIVITY_NOT_FOUND(HttpStatus.NOT_FOUND, "활동을 찾을 수 없습니다."),
