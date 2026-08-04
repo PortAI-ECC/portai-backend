@@ -60,4 +60,9 @@ public class Project extends BaseEntity {
         this.endDate = endDate;
         this.githubUrl = githubUrl;
     }
+
+    // AI 설명 생성 결과 반영 (사용자가 직접 수정한 description을 덮어쓰는 것이므로 명시적으로 분리)
+    public void applyGeneratedDescription(String generatedDescription) {
+        this.description = generatedDescription;
+    }
 }
