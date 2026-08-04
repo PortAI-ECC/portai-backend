@@ -16,6 +16,8 @@ public enum ErrorCode {
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "입력값이 올바르지 않습니다."),
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "지원하지 않는 HTTP 메서드입니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다."),
+    FILE_STORAGE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일 저장 중 오류가 발생했습니다."),
+    FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다."),
 
     // ===== 인증/세션 (윤지) =====
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증이 필요합니다."),
@@ -37,10 +39,14 @@ public enum ErrorCode {
     // ===== 생성/LLM (지호) =====
     GENERATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "생성에 실패했습니다."),
     LLM_CLIENT_ERROR(HttpStatus.BAD_GATEWAY, "LLM 호출 중 오류가 발생했습니다."),
+    GENERATION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 생성 요청을 찾을 수 없거나 권한이 없습니다."),
+    GENERATION_RESULT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유형의 생성 결과를 찾을 수 없습니다."),
 
     // ===== 외부 연동 (지호) =====
     GITHUB_REPO_NOT_FOUND(HttpStatus.NOT_FOUND, "GitHub 저장소를 찾을 수 없습니다."),
     GITHUB_API_ERROR(HttpStatus.BAD_GATEWAY, "GitHub API 호출에 실패했습니다."),
+    INTEGRATION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 연동 정보를 찾을 수 없거나 권한이 없습니다."),
+    DUPLICATE_INTEGRATION(HttpStatus.BAD_REQUEST, "이미 등록된 플랫폼입니다."),
 
     // ===== 채용공고 분석 (지호) =====
     JOB_POSTING_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 채용공고를 찾을 수 없거나 권한이 없습니다."),

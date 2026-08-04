@@ -30,7 +30,7 @@ public class JobPosting extends BaseEntity {
     @Column(name = "source_type", nullable = false, length = 10)
     private SourceType sourceType;
 
-    // URL이거나 업로드된 PDF 파일 경로
+    // URL이거나 업로드된 PDF 파일 저장 경로
     @Column(name = "source_value", length = 500)
     private String sourceValue;
 
