@@ -78,7 +78,7 @@ public class IntegrationService {
     /**
      * 수집 상태 조회 (본인 소유만 가능)
      */
-    public IntegrationResponse getStatus(Long userId, Long integrationId) {
+    public IntegrationResponse getSyncStatus(Long userId, Long integrationId) {
         Integration integration = findOwnedIntegrationOrThrow(userId, integrationId);
         return new IntegrationResponse(integration);
     }

@@ -54,11 +54,11 @@ public class IntegrationController {
     }
 
     // 수집 상태 조회
-    @GetMapping("/{integrationId}/status")
-    public ResponseEntity<ApiResponse<IntegrationResponse>> getStatus(
+    @GetMapping("/{integrationId}/sync-status")
+    public ResponseEntity<ApiResponse<IntegrationResponse>> getSyncStatus(
             @AuthUser Long userId,
             @PathVariable Long integrationId) {
-        IntegrationResponse response = integrationService.getStatus(userId, integrationId);
+        IntegrationResponse response = integrationService.getSyncStatus(userId, integrationId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 }
