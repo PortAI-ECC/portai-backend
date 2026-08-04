@@ -42,6 +42,9 @@ public enum ErrorCode {
     GITHUB_REPO_NOT_FOUND(HttpStatus.NOT_FOUND, "GitHub 저장소를 찾을 수 없습니다."),
     GITHUB_API_ERROR(HttpStatus.BAD_GATEWAY, "GitHub API 호출에 실패했습니다."),
 
+    // ===== 채용공고 분석 (지호) =====
+    JOB_POSTING_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 채용공고를 찾을 수 없거나 권한이 없습니다."),
+
     // ===== 활동/포트폴리오 (가현) =====
     ACTIVITY_NOT_FOUND(HttpStatus.NOT_FOUND, "활동을 찾을 수 없습니다."),
     PORTFOLIO_NOT_FOUND(HttpStatus.NOT_FOUND, "포트폴리오를 찾을 수 없습니다.");
