@@ -64,12 +64,39 @@ public class TechStack {
     @Column(nullable = false)
     private TechSource source = TechSource.MANUAL;
 
+    /**
+     * 프론트엔드 정렬 순서 (기본값 0, 작을수록 앞에 배치)
+     */
+    @Column(nullable = false)
+    private Integer orderIndex = 0;
+
     @Builder
-    public TechStack(User user, String name, TechCategory category, Proficiency proficiency, TechSource source) {
+    public TechStack(User user, String name, TechCategory category, Proficiency proficiency, TechSource source, Integer orderIndex) {
         this.user = user;
         this.name = name;
         this.category = (category != null) ? category : TechCategory.OTHER;
         this.proficiency = (proficiency != null) ? proficiency : Proficiency.INTERMEDIATE;
         this.source = (source != null) ? source : TechSource.MANUAL;
+        this.orderIndex = (orderIndex != null) ? orderIndex : 0;
+    }
+
+
+    /**
+     * 기술 스택 정보 수정 (개별 수정 PATCH 용)
+     */
+    public void updateTechStack(TechCategory category, Proficiency proficiency) {
+        if (category != null) {
+            this.category = category;
+        }
+        if (proficiency != null) {
+            this.proficiency = proficiency;
+        }
+    }
+
+    /**
+     * 기술 스택 순서 변경 (순서 재정렬 PUT 용)
+     */
+    public void updateOrderIndex(Integer orderIndex) {
+        this.orderIndex = orderIndex;
     }
 }

@@ -1,7 +1,9 @@
 package com.portai.domain.techstack.service;
 
 import com.portai.domain.techstack.dto.TechStackCreateRequest;
+import com.portai.domain.techstack.dto.TechStackReorderRequest;
 import com.portai.domain.techstack.dto.TechStackResponse;
+import com.portai.domain.techstack.dto.TechStackUpdateRequest;
 import com.portai.domain.techstack.entity.TechStack;
 import com.portai.domain.techstack.repository.TechStackRepository;
 import com.portai.domain.user.entity.User;
@@ -30,7 +32,8 @@ public class TechStackService {
      * 1. 기술 스택 목록 조회 (GET)
      */
     public List<TechStackResponse> getTechStacks(Long userId) {
-        List<TechStack> techStacks = techStackRepository.findByUserId(userId);
+
+        List<TechStack> techStacks = techStackRepository.findByUserIdOrderByOrderIndexAsc(userId);
 
         return techStacks.stream()
                 .map(TechStackResponse::from)
@@ -51,11 +54,15 @@ public class TechStackService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        // 현재 유저의 가장 마지막 순서를 찾아서 +1 해줌
+        Integer nextOrderIndex = techStackRepository.findMaxOrderIndexByUserId(userId) + 1;
+
         TechStack techStack = TechStack.builder()
                 .user(user)
                 .name(request.getName())
                 .category(request.getCategory())
                 .proficiency(request.getProficiency())
+                .orderIndex(nextOrderIndex)
                 .build();
 
         return techStackRepository.save(techStack).getId();
@@ -71,5 +78,36 @@ public class TechStackService {
                 .orElseThrow(() -> new CustomException(ErrorCode.TECH_STACK_NOT_FOUND));
 
         techStackRepository.delete(techStack);
+    }
+
+    /**
+     * 4. 기술 스택 개별 수정 (PATCH)
+     */
+    @Transactional
+    public void updateTechStack(Long userId, Long skillId, TechStackUpdateRequest request) {
+        // 본인 소유 검증
+        TechStack techStack = techStackRepository.findByIdAndUserId(skillId, userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.TECH_STACK_NOT_FOUND));
+
+        // 엔티티 내부 메서드를 통해 안전하게 값 변경 (JPA Dirty Checking으로 자동 업데이트됨)
+        techStack.updateTechStack(request.getCategory(), request.getProficiency());
+    }
+
+    /**
+     * 5. 기술 스택 순서 재정렬 (PUT)
+     */
+    @Transactional
+    public void reorderTechStacks(Long userId, TechStackReorderRequest request) {
+        List<Long> skillIds = request.getSkillIds();
+
+        for (int i = 0; i < skillIds.size(); i++) {
+            Long skillId = skillIds.get(i);
+
+            // 본인 소유 검증 후 순서(index) 덮어씌우기
+            TechStack techStack = techStackRepository.findByIdAndUserId(skillId, userId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.TECH_STACK_NOT_FOUND));
+
+            techStack.updateOrderIndex(i + 1);
+        }
     }
 }
