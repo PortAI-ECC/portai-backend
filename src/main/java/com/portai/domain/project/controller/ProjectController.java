@@ -1,18 +1,22 @@
 package com.portai.domain.project.controller;
 
+import com.portai.domain.project.dto.ProjectAttachmentResponse;
 import com.portai.domain.project.dto.ProjectRequest;
 import com.portai.domain.project.dto.ProjectResponse;
 import com.portai.domain.project.service.ProjectService;
 import com.portai.domain.user.entity.User;
 import com.portai.domain.user.repository.UserRepository;
+import com.portai.global.annotation.AuthUser;
 import com.portai.global.common.ApiResponse;
 import com.portai.global.exception.CustomException;
 import com.portai.global.exception.ErrorCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -59,6 +63,25 @@ public class ProjectController {
     public ResponseEntity<ApiResponse<Void>> deleteProject(@PathVariable Long projectId) {
         projectService.deleteProject(getCurrentUserId(), projectId);
         return ResponseEntity.ok(ApiResponse.success());
+    }
+
+    // 발표자료 업로드
+    @PostMapping(value = "/{projectId}/attachments", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<ProjectAttachmentResponse>> uploadAttachment(
+            @AuthUser Long userId,
+            @PathVariable Long projectId,
+            @RequestPart("file") MultipartFile file) {
+        ProjectAttachmentResponse response = projectService.uploadAttachment(userId, projectId, file);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    // AI 설명 생성 요청
+    @PostMapping("/{projectId}/description/generate")
+    public ResponseEntity<ApiResponse<ProjectResponse>> generateDescription(
+            @AuthUser Long userId,
+            @PathVariable Long projectId) {
+        ProjectResponse response = projectService.generateDescription(userId, projectId);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     /**

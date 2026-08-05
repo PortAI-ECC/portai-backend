@@ -35,6 +35,7 @@ public enum ErrorCode {
     // ===== 프로젝트 (지호) =====
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "프로젝트를 찾을 수 없습니다."),
     PROJECT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 프로젝트에 대한 권한이 없습니다."),
+    PROJECT_ATTACHMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 발표자료를 찾을 수 없습니다."),
 
     // ===== 생성/LLM (지호) =====
     GENERATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "생성에 실패했습니다."),
