@@ -32,7 +32,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // 프론트엔드 연결을 위해 꺼둠
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/signup", "/api/auth/login").permitAll() // 회원가입/로그인 주소는 누구에게나 개방
+                        .requestMatchers("/api/auth/signup", "/api/auth/login").permitAll()// 회원가입/로그인 주소는 누구에게나 개방
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()//스웨거 UI와 API 문서 데이터 주소 개방
                         .anyRequest().authenticated() // 나머지 주소는 로그인해야만 접근 가능
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
