@@ -1,6 +1,7 @@
 spring:
   application:
-    name: portai
+    name: resume_service
+
   profiles:
     active: local
 
@@ -9,7 +10,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/portai?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
     username: root
-    password: 여기에_본인의_DB_비밀번호를_적어주세요
+    password: #여기에_본인의_DB_비밀번호를_적어주세요
 
   jpa:
     hibernate:
