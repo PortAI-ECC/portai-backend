@@ -35,6 +35,9 @@ public enum ErrorCode {
     // ===== 공모전 (윤지) =====
     CONTEST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 공모전 이력을 찾을 수 없습니다."),
 
+    // ===== 인턴/경력 (윤지) =====
+    CAREER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 경력을 찾을 수 없습니다."),
+
     // ===== 프로젝트 (지호) =====
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "프로젝트를 찾을 수 없습니다."),
     PROJECT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 프로젝트에 대한 권한이 없습니다."),
