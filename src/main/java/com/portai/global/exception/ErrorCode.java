@@ -32,6 +32,11 @@ public enum ErrorCode {
     DUPLICATE_TECH_STACK(HttpStatus.BAD_REQUEST, "이미 등록된 기술입니다."),
     TECH_STACK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 기술 스택을 찾을 수 없거나 권한이 없습니다."),
 
+    // ===== 기술 스택 (윤지) =====
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
+    TECH_STACK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 기술 스택을 찾을 수 없습니다."),
+    DUPLICATE_TECH_STACK(HttpStatus.CONFLICT, "이미 등록된 기술 스택입니다."),
+
     // ===== 프로젝트 (지호) =====
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "프로젝트를 찾을 수 없습니다."),
     PROJECT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 프로젝트에 대한 권한이 없습니다."),
