@@ -60,7 +60,11 @@ public enum ErrorCode {
     // ===== 활동/포트폴리오 (가현) =====
     ACTIVITY_NOT_FOUND(HttpStatus.NOT_FOUND, "활동을 찾을 수 없습니다."),
     ACTIVITY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 활동에 대한 권한이 없습니다."),
-    PORTFOLIO_NOT_FOUND(HttpStatus.NOT_FOUND, "포트폴리오를 찾을 수 없습니다.");
+    PORTFOLIO_NOT_FOUND(HttpStatus.NOT_FOUND, "포트폴리오를 찾을 수 없습니다."),
+
+    // ===== 교육 (가현) =====
+    EDUCATION_NOT_FOUND(HttpStatus.NOT_FOUND, "교육 이력을 찾을 수 없습니다."),
+    EDUCATION_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 교육 이력에 대한 권한이 없습니다.");
 
     private final HttpStatus status;
     private final String message;
