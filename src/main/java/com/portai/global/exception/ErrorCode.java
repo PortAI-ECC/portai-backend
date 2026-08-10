@@ -32,6 +32,15 @@ public enum ErrorCode {
     DUPLICATE_TECH_STACK(HttpStatus.BAD_REQUEST, "이미 등록된 기술입니다."),
     TECH_STACK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 기술 스택을 찾을 수 없거나 권한이 없습니다."),
 
+    // ===== 공모전 (윤지) =====
+    CONTEST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 공모전 이력을 찾을 수 없습니다."),
+
+    // ===== 인턴/경력 (윤지) =====
+    CAREER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 경력을 찾을 수 없습니다."),
+
+    // ===== 맞춤화 설정 (윤지) =====
+    PREFERENCE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저의 맞춤화 설정을 찾을 수 없습니다."),
+
     // ===== 프로젝트 (지호) =====
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "프로젝트를 찾을 수 없습니다."),
     PROJECT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 프로젝트에 대한 권한이 없습니다."),
@@ -52,14 +61,12 @@ public enum ErrorCode {
     // ===== 채용공고 분석 (지호) =====
     JOB_POSTING_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 채용공고를 찾을 수 없거나 권한이 없습니다."),
 
-    // ===== 활동/포트폴리오 (가현) =====
+    // ===== 활동/포트폴리오/자격증 (가현) =====
     ACTIVITY_NOT_FOUND(HttpStatus.NOT_FOUND, "활동을 찾을 수 없습니다."),
     ACTIVITY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 활동에 대한 권한이 없습니다."),
-    PORTFOLIO_NOT_FOUND(HttpStatus.NOT_FOUND, "포트폴리오를 찾을 수 없습니다."),
-
-    // ===== 교육 (가현) =====
-    EDUCATION_NOT_FOUND(HttpStatus.NOT_FOUND, "교육 이력을 찾을 수 없습니다."),
-    EDUCATION_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 교육 이력에 대한 권한이 없습니다.");
+    CERTIFICATE_NOT_FOUND(HttpStatus.NOT_FOUND, "자격증을 찾을 수 없습니다."),
+    CERTIFICATE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 자격증에 대한 권한이 없습니다."),
+    PORTFOLIO_NOT_FOUND(HttpStatus.NOT_FOUND, "포트폴리오를 찾을 수 없습니다.");
 
     private final HttpStatus status;
     private final String message;
