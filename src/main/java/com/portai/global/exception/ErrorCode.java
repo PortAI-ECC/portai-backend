@@ -52,9 +52,11 @@ public enum ErrorCode {
     // ===== 채용공고 분석 (지호) =====
     JOB_POSTING_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 채용공고를 찾을 수 없거나 권한이 없습니다."),
 
-    // ===== 활동/포트폴리오 (가현) =====
+    // ===== 활동/포트폴리오/자격증 (가현) =====
     ACTIVITY_NOT_FOUND(HttpStatus.NOT_FOUND, "활동을 찾을 수 없습니다."),
     ACTIVITY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 활동에 대한 권한이 없습니다."),
+    CERTIFICATE_NOT_FOUND(HttpStatus.NOT_FOUND, "자격증을 찾을 수 없습니다."),
+    CERTIFICATE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 자격증에 대한 권한이 없습니다."),
     PORTFOLIO_NOT_FOUND(HttpStatus.NOT_FOUND, "포트폴리오를 찾을 수 없습니다.");
 
     private final HttpStatus status;
