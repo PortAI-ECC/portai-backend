@@ -66,6 +66,8 @@ public enum ErrorCode {
     ACTIVITY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 활동에 대한 권한이 없습니다."),
     CERTIFICATE_NOT_FOUND(HttpStatus.NOT_FOUND, "자격증을 찾을 수 없습니다."),
     CERTIFICATE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 자격증에 대한 권한이 없습니다."),
+    EDUCATION_NOT_FOUND(HttpStatus.NOT_FOUND, "학력을 찾을 수 없습니다."),
+    EDUCATION_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 학력에 대한 권한이 없습니다."),
     PORTFOLIO_NOT_FOUND(HttpStatus.NOT_FOUND, "포트폴리오를 찾을 수 없습니다.");
 
     private final HttpStatus status;
