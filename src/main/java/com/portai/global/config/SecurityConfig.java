@@ -4,6 +4,8 @@ import com.portai.global.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -31,7 +33,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) // 프론트엔드 연결을 위해 꺼둠
+                // CorsConfigurationSource 빈(WebConfig)을 그대로 사용
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // CORS 프리플라이트 요청은 인증 없이 통과
                         .requestMatchers("/api/auth/signup", "/api/auth/login").permitAll()// 회원가입/로그인 주소는 누구에게나 개방
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()//스웨거 UI와 API 문서 데이터 주소 개방
                         .anyRequest().authenticated() // 나머지 주소는 로그인해야만 접근 가능
