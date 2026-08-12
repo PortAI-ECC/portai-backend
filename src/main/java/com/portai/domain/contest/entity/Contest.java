@@ -58,14 +58,15 @@ public class Contest {
         this.result = result;
     }
 
-    // 💡 수정(PATCH) API를 위한 비즈니스 메서드 (Dirty Checking 활용)
+    // 부분 수정(PATCH) API를 위한 메서드
     public void updateContest(String name, String host, LocalDate startDate, LocalDate endDate, Boolean awarded, String role, String result) {
-        this.name = name;
-        this.host = host;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.awarded = awarded != null ? awarded : false;
-        this.role = role;
-        this.result = result;
+        // 프론트엔드에서 null을 보낸 항목은 무시하고, 값이 있는(수정 요청된) 항목만 골라서 업데이트
+        if (name != null) this.name = name;
+        if (host != null) this.host = host;
+        if (startDate != null) this.startDate = startDate;
+        if (endDate != null) this.endDate = endDate;
+        if (awarded != null) this.awarded = awarded;
+        if (role != null) this.role = role;
+        if (result != null) this.result = result;
     }
 }
