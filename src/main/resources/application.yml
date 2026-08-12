@@ -1,19 +1,22 @@
 spring:
   application:
-    name: portai
+    name: resume_service
+
   profiles:
-    active: local
+    active: ${SPRING_PROFILES_ACTIVE:local}
 
   # DB 접속 정보
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/portai?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: 여기에_본인의_DB_비밀번호를_적어주세요
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
-      ddl-auto: update
+      # DB 날림 방지 반영: 환경변수가 없으면 기본값인 update를 쓰고,
+      # Railway에서 변수를 주면 그 값(validate)으로 덮어쓰도록 세팅
+      ddl-auto: ${DDL_AUTO:update}
     properties:
       hibernate:
         format_sql: true
@@ -25,7 +28,7 @@ spring:
     default-property-inclusion: non_null
 
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 logging:
   level:
@@ -39,6 +42,6 @@ springdoc:
 
 # JWT 설정
 jwt:
-  secret: vmfldptmxhzhfhtkfkdgoqnwkdudnjsgkfRjdi12345!@#
-  expiration_time: 1800000 # Access Token 수명: 30분 (1800000밀리초)
-  refresh_expiration_time: 1209600000 # Refresh Token 수명: 14일 (1209600000밀리초)
+  secret: ${JWT_SECRET}
+  expiration_time: ${JWT_EXPIRATION_TIME:1800000}
+  refresh_expiration_time: ${JWT_REFRESH_EXPIRATION_TIME:1209600000}
