@@ -59,7 +59,6 @@ public class User {
         this.email = email;
         this.password = password;
         this.phone = phone;
-        this.desiredJob = desiredJob;
     }
 
     public void updateProfile(String phone, String introOneLiner, DesiredJob desiredJob, String desiredCompany) {

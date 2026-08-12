@@ -20,5 +20,4 @@ public class SignupRequest {
     private String name;
 
     private String phone;
-    private DesiredJob desiredJob;
 }

@@ -43,7 +43,6 @@ public class UserService {
                 .password(encodedPassword)
                 .name(request.getName())
                 .phone(request.getPhone())
-                .desiredJob(request.getDesiredJob())
                 .build();
 
         User savedUser = userRepository.save(user);

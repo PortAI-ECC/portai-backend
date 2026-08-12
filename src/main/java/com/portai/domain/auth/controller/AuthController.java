@@ -31,7 +31,7 @@ public class AuthController {
      * @return 로그인 성공 시 AuthResponse (유저 식별자, 이름, 토큰) 반환
      */
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
 
         // 1. Service의 로그인 로직을 호출하고, 그 결과(AuthResponse)를 받음
         AuthResponse response = userService.login(request);
