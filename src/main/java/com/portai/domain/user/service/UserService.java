@@ -1,10 +1,10 @@
-package com.portai.domain.auth.service;
+package com.portai.domain.user.service;
 
-import com.portai.domain.auth.dto.*;
-import com.portai.domain.auth.entity.RefreshToken;
-import com.portai.domain.auth.entity.User;
-import com.portai.domain.auth.repository.RefreshTokenRepository;
-import com.portai.domain.auth.repository.UserRepository;
+import com.portai.domain.user.dto.*;
+import com.portai.domain.user.entity.RefreshToken;
+import com.portai.domain.user.entity.User;
+import com.portai.domain.user.repository.RefreshTokenRepository;
+import com.portai.domain.user.repository.UserRepository;
 import com.portai.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,7 +60,7 @@ public class UserService {
      * 사용자 로그인 로직 (토큰 2개 발급 및 리프레시 토큰 DB 저장)
      */
     @Transactional
-    public AuthResponse login(LoginRequest request) {
+    public UserResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -77,13 +77,13 @@ public class UserService {
         tokenEntity.updateToken(refreshToken);
         refreshTokenRepository.save(tokenEntity);
 
-        AuthResponse.UserInfo userInfo = new AuthResponse.UserInfo(
+        UserResponse.UserInfo userInfo = new UserResponse.UserInfo(
                 user.getId(),
                 user.getName(),
                 user.getEmail()
         );
 
-        return new AuthResponse(
+        return new UserResponse(
                 "로그인 성공",
                 accessToken,
                 refreshToken,
@@ -96,7 +96,7 @@ public class UserService {
      * Access Token 갱신 로직
      */
     @Transactional
-    public AuthResponse refresh(TokenRefreshRequest request) {
+    public UserResponse refresh(TokenRefreshRequest request) {
         String refreshToken = request.getRefreshToken();
 
         if (!jwtProvider.validateToken(refreshToken)) {
@@ -117,13 +117,13 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        AuthResponse.UserInfo userInfo = new AuthResponse.UserInfo(
+        UserResponse.UserInfo userInfo = new UserResponse.UserInfo(
                 user.getId(),
                 user.getName(),
                 user.getEmail()
         );
 
-        return new AuthResponse(
+        return new UserResponse(
                 "토큰 갱신 성공",
                 newAccessToken,
                 refreshToken,

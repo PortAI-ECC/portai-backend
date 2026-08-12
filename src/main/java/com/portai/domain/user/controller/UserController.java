@@ -1,7 +1,7 @@
-package com.portai.domain.auth.controller;
+package com.portai.domain.user.controller;
 
-import com.portai.domain.auth.dto.*;
-import com.portai.domain.auth.service.UserService;
+import com.portai.domain.user.dto.*;
+import com.portai.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class UserController {
 
     // Servic 호출
     private final UserService userService;
@@ -31,10 +31,10 @@ public class AuthController {
      * @return 로그인 성공 시 AuthResponse (유저 식별자, 이름, 토큰) 반환
      */
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request) {
 
         // 1. Service의 로그인 로직을 호출하고, 그 결과(AuthResponse)를 받음
-        AuthResponse response = userService.login(request);
+        UserResponse response = userService.login(request);
 
         // 2. 프론트엔드에 HTTP 상태 200(OK)과 함께 로그인 성공 데이터를 반환
         return ResponseEntity.ok(response);
@@ -44,8 +44,8 @@ public class AuthController {
      * Access Token 갱신 API
      */
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refresh(@RequestBody TokenRefreshRequest request) {
-        AuthResponse response = userService.refresh(request);
+    public ResponseEntity<UserResponse> refresh(@RequestBody TokenRefreshRequest request) {
+        UserResponse response = userService.refresh(request);
         return ResponseEntity.ok(response);
     }
 

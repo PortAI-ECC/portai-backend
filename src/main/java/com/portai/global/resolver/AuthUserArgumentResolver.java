@@ -1,7 +1,7 @@
 package com.portai.global.resolver;
 
-import com.portai.domain.auth.entity.User;
-import com.portai.domain.auth.repository.UserRepository;
+import com.portai.domain.user.entity.User;
+import com.portai.domain.user.repository.UserRepository;
 import com.portai.global.annotation.AuthUser;
 import com.portai.global.exception.CustomException;
 import com.portai.global.exception.ErrorCode;

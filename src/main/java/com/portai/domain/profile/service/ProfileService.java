@@ -2,8 +2,8 @@ package com.portai.domain.profile.service;
 
 import com.portai.domain.profile.dto.ProfileResponse;
 import com.portai.domain.profile.dto.ProfileUpdateRequest;
-import com.portai.domain.auth.entity.User;
-import com.portai.domain.auth.repository.UserRepository;
+import com.portai.domain.user.entity.User;
+import com.portai.domain.user.repository.UserRepository;
 import com.portai.global.exception.CustomException;
 import com.portai.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

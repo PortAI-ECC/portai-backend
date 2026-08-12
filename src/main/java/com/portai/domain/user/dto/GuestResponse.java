@@ -1,4 +1,4 @@
-package com.portai.domain.auth.dto;
+package com.portai.domain.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

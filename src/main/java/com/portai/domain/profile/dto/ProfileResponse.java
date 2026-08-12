@@ -1,6 +1,6 @@
 package com.portai.domain.profile.dto;
 
-import com.portai.domain.auth.entity.DesiredJob;
+import com.portai.domain.user.entity.DesiredJob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
