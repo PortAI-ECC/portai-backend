@@ -29,6 +29,8 @@ spring:
 
 server:
   port: ${PORT:8080}
+  # 프록시(Railway)가 넘겨주는 프로토콜(HTTPS) 정보를 스프링 부트가 올바르게 인식하도록 함
+  forward-headers-strategy: native
 
 logging:
   level:

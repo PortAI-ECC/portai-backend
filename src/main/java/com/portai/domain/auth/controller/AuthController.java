@@ -1,7 +1,8 @@
-package com.portai.domain.user.controller;
+package com.portai.domain.auth.controller;
 
-import com.portai.domain.user.dto.*;
-import com.portai.domain.user.service.UserService;
+import com.portai.domain.auth.dto.*;
+import com.portai.domain.auth.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,17 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-public class UserController {
+public class AuthController {
 
     // Servic 호출
     private final UserService userService;
 
     // 회원가입 API (POST 방식으로 요청을 보내면 실행됨)
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequest request) {
-
-        userService.signup(request);
-        return ResponseEntity.ok("회원가입이 완료되었습니다!");
+    public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest request) {
+        SignupResponse response = userService.signup(request);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -60,5 +60,15 @@ public class UserController {
 
         // 2. 명세서에 맞춰 성공 메시지 반환
         return ResponseEntity.ok(new MessageResponse("로그아웃 되었습니다."));
+    }
+
+    /**
+     * 게스트(비회원) 임시 토큰 발급 API
+     * @return 게스트 임시 토큰 및 만료 시간 반환
+     */
+    @PostMapping("/guest")
+    public ResponseEntity<GuestResponse> guestLogin() {
+        GuestResponse response = userService.createGuestSession();
+        return ResponseEntity.ok(response);
     }
 }

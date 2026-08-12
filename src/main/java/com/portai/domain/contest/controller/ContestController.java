@@ -51,7 +51,7 @@ public class ContestController {
     public ResponseEntity<Map<String, Object>> updateContest(
             @AuthUser Long userId,
             @PathVariable Long contestId,
-            @Valid @RequestBody ContestUpdateRequest request) {
+            @RequestBody ContestUpdateRequest request) {
 
         // 서비스 로직 실행 (수정 진행)
         contestService.updateContest(userId, contestId, request);
@@ -59,8 +59,7 @@ public class ContestController {
         // 명세서와 동일한 형태의 JSON 응답 생성
         return ResponseEntity.ok(Map.of(
                 "message", "공모전 이력이 수정되었습니다.",
-                "contestId", contestId,
-                "result", request.getResult()
+                "contestId", contestId
         ));
     }
     /**
