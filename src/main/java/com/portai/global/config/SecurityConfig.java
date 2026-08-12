@@ -32,7 +32,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // 프론트엔드 연결을 위해 꺼둠
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/signup", "/api/auth/login").permitAll() // 회원가입/로그인 주소는 누구에게나 개방
+                        // 회원가입, 로그인, 게스트 토큰 발급 주소는 누구나 접근 가능하도록 개방
+                        .requestMatchers("/api/auth/signup", "/api/auth/login", "/api/auth/guest").permitAll()
                         .anyRequest().authenticated() // 나머지 주소는 로그인해야만 접근 가능
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

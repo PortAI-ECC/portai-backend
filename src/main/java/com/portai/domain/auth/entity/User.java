@@ -1,4 +1,4 @@
-package com.portai.domain.user.entity;
+package com.portai.domain.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

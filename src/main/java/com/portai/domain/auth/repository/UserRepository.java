@@ -1,6 +1,6 @@
-package com.portai.domain.user.repository;
+package com.portai.domain.auth.repository;
 
-import com.portai.domain.user.entity.User;
+import com.portai.domain.auth.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
