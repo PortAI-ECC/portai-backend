@@ -35,6 +35,10 @@ public class Generation extends BaseEntity {
     @Column(length = 30)
     private String style;
 
+    // REQ-026: 사용자가 선택한 포트폴리오 템플릿 (프론트 TEMPLATES 목록의 id, 예: "template-1")
+    @Column(name = "template_id", length = 50)
+    private String templateId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "overall_status", nullable = false, length = 20)
     private GenerationOverallStatus overallStatus;
@@ -44,10 +48,11 @@ public class Generation extends BaseEntity {
     private final List<GenerationResult> results = new ArrayList<>();
 
     @Builder
-    public Generation(User user, JobPosting jobPosting, String style) {
+    public Generation(User user, JobPosting jobPosting, String style, String templateId) {
         this.user = user;
         this.jobPosting = jobPosting;
         this.style = style;
+        this.templateId = templateId;
         this.overallStatus = GenerationOverallStatus.IN_PROGRESS;
     }
 

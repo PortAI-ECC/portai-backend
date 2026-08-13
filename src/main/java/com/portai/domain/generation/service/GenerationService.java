@@ -41,7 +41,7 @@ public class GenerationService {
         User user = getUserOrThrow(userId);
         JobPosting jobPosting = getJobPostingOrNull(userId, request.getJobPostingId());
 
-        Generation generation = buildGeneration(user, jobPosting, request.getStyle(), request.getTypes());
+        Generation generation = buildGeneration(user, jobPosting, request.getStyle(), request.getTemplateId(), request.getTypes());
         Generation saved = generationRepository.save(generation);
         return new GenerationResponse(saved);
     }
@@ -58,7 +58,7 @@ public class GenerationService {
                 .map(GenerationResult::getType)
                 .collect(Collectors.toList());
 
-        Generation regenerated = buildGeneration(source.getUser(), source.getJobPosting(), source.getStyle(), types);
+        Generation regenerated = buildGeneration(source.getUser(), source.getJobPosting(), source.getStyle(), source.getTemplateId(), types);
         Generation saved = generationRepository.save(regenerated);
         return new GenerationResponse(saved);
     }
@@ -66,6 +66,7 @@ public class GenerationService {
     /**
      * 내 생성 이력 목록 조회 (최신순)
      */
+    @Transactional(readOnly = true)
     public List<GenerationResponse> getMyGenerations(Long userId) {
         return generationRepository.findAllByUserIdOrderByCreatedAtDesc(userId).stream()
                 .map(GenerationResponse::new)
@@ -75,6 +76,7 @@ public class GenerationService {
     /**
      * 생성 결과 상세 조회 (결과물 목록 포함, 본인 소유만 가능)
      */
+    @Transactional(readOnly = true)
     public GenerationResponse getGeneration(Long userId, Long generationId) {
         return new GenerationResponse(findOwnedGenerationOrThrow(userId, generationId));
     }
@@ -95,6 +97,7 @@ public class GenerationService {
      * 결과물 파일 다운로드용 데이터 조회 (본인 소유만 가능).
      * 실제 파일(fileUrl)이 아직 없는 상태(자리표시자)라면 컨트롤러에서 content를 텍스트 파일로 변환해 내려준다.
      */
+    @Transactional(readOnly = true)
     public GenerationResultResponse getResultForDownload(Long userId, Long generationId, GenerationResultType type) {
         Generation generation = findOwnedGenerationOrThrow(userId, generationId);
         return new GenerationResultResponse(findResultOrThrow(generation, type));
@@ -108,11 +111,12 @@ public class GenerationService {
         generationRepository.delete(findOwnedGenerationOrThrow(userId, generationId));
     }
 
-    private Generation buildGeneration(User user, JobPosting jobPosting, String style, List<GenerationResultType> types) {
+    private Generation buildGeneration(User user, JobPosting jobPosting, String style, String templateId, List<GenerationResultType> types) {
         Generation generation = Generation.builder()
                 .user(user)
                 .jobPosting(jobPosting)
                 .style(style)
+                .templateId(templateId)
                 .build();
 
         // 같은 요청 안에서 유형이 중복되더라도 한 번씩만 생성 (uq_generation_type 제약 위반 방지)

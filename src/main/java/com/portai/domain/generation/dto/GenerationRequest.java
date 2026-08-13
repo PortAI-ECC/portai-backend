@@ -20,6 +20,9 @@ public class GenerationRequest {
     // 적용할 문체 (윤지/preferences 도메인의 style 값과 동일한 규칙 사용)
     private String style;
 
+    // REQ-026: 선택한 포트폴리오 템플릿 id (프론트 TEMPLATES 목록 기준, 예: "template-1")
+    private String templateId;
+
     @NotEmpty(message = "생성할 결과물 유형을 최소 1개 이상 선택해야 합니다.")
     private List<GenerationResultType> types;
 }
