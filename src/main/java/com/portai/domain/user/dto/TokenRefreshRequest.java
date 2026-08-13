@@ -1,4 +1,4 @@
-package com.portai.domain.auth.dto;
+package com.portai.domain.user.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

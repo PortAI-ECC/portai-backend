@@ -1,6 +1,6 @@
-package com.portai.domain.auth.repository;
+package com.portai.domain.user.repository;
 
-import com.portai.domain.auth.entity.RefreshToken;
+import com.portai.domain.user.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

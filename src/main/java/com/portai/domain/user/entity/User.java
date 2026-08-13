@@ -1,4 +1,4 @@
-package com.portai.domain.auth.entity;
+package com.portai.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -59,6 +59,20 @@ public class User {
         this.email = email;
         this.password = password;
         this.phone = phone;
-        this.desiredJob = desiredJob;
+    }
+
+    public void updateProfile(String phone, String introOneLiner, DesiredJob desiredJob, String desiredCompany) {
+        if (phone != null) {
+            this.phone = phone;
+        }
+        if (introOneLiner != null) {
+            this.introOneLiner = introOneLiner;
+        }
+        if (desiredJob != null) {
+            this.desiredJob = desiredJob;
+        }
+        if (desiredCompany != null) {
+            this.desiredCompany = desiredCompany;
+        }
     }
 }

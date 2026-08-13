@@ -1,8 +1,7 @@
-package com.portai.domain.auth.dto;
+package com.portai.domain.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import com.portai.domain.auth.entity.DesiredJob;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,5 +19,4 @@ public class SignupRequest {
     private String name;
 
     private String phone;
-    private DesiredJob desiredJob;
 }
