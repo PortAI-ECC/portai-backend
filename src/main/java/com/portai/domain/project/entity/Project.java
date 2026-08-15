@@ -25,7 +25,7 @@ public class Project extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "name", nullable = false, length = 100)
     private String title;
 
     @Column(columnDefinition = "TEXT")
