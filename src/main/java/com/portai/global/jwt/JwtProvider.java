@@ -93,6 +93,7 @@ public class JwtProvider {
             return true;
         } catch (Exception e) {
             // 만료되었거나, 위조되었거나, 형식이 잘못된 경우 모두 에러(Exception)가 발생하여 false 반환
+            System.out.println("토큰 검증 실패 이유: " + e.getMessage());
             return false;
         }
     }

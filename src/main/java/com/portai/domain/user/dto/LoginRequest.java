@@ -3,7 +3,9 @@ package com.portai.domain.user.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Setter;
 
+@Setter
 @Getter
 @NoArgsConstructor
 public class LoginRequest {

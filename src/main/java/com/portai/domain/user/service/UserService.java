@@ -99,6 +99,11 @@ public class UserService {
     public UserResponse refresh(TokenRefreshRequest request) {
         String refreshToken = request.getRefreshToken();
 
+        // 방어 코드: 토큰 앞에 "Bearer "가 붙어 있다면 떼어냄
+        if (refreshToken != null && refreshToken.startsWith("Bearer ")) {
+            refreshToken = refreshToken.substring(7);
+        }
+
         if (!jwtProvider.validateToken(refreshToken)) {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
