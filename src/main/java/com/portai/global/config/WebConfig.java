@@ -35,7 +35,8 @@ public class WebConfig implements WebMvcConfigurer {
         configuration.setAllowedOriginPatterns(List.of(
                 "http://localhost:3000",   // 로컬 프론트 (Next.js/CRA 기본 포트)
                 "http://localhost:5173",   // 로컬 프론트 (Vite 기본 포트)
-                "https://*.vercel.app"     // Vercel 배포/프리뷰 도메인
+                "https://*.vercel.app",     // Vercel 배포/프리뷰 도메인
+                "https://ecc-portai.netlify.app" // Netlify 프론트 배포 도메인
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
