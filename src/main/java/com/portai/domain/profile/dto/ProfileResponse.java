@@ -1,6 +1,5 @@
 package com.portai.domain.profile.dto;
 
-import com.portai.domain.user.entity.DesiredJob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +13,6 @@ public class ProfileResponse {
     private String email;
     private String phone;
     private String introOneLiner;
-    private DesiredJob desiredJob;
+    private String desiredJob;
     private String desiredCompany;
 }
