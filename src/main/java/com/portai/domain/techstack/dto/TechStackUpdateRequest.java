@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class TechStackUpdateRequest {
     private TechCategory category;
     private Proficiency proficiency;
+    private String freeText;
 }

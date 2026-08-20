@@ -15,5 +15,6 @@ public class TechStackCreateRequest {
     private String name;
     private TechCategory category;
     private Proficiency proficiency;
+    private String freeText;
 
 }

@@ -69,6 +69,7 @@ public class CareerController {
         if (request.getEndDate() != null) response.put("endDate", request.getEndDate());
         if (request.getDuties() != null) response.put("duties", request.getDuties());
         if (request.getAchievements() != null) response.put("achievements", request.getAchievements());
+        if (request.getFreeText() != null) response.put("freeText", request.getFreeText());
 
         return ResponseEntity.ok(response);
     }

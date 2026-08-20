@@ -63,6 +63,7 @@ public class TechStackService {
                 .category(request.getCategory())
                 .proficiency(request.getProficiency())
                 .orderIndex(nextOrderIndex)
+                .freeText(request.getFreeText())
                 .build();
 
         return techStackRepository.save(techStack).getId();
@@ -90,7 +91,7 @@ public class TechStackService {
                 .orElseThrow(() -> new CustomException(ErrorCode.TECH_STACK_NOT_FOUND));
 
         // 엔티티 내부 메서드를 통해 안전하게 값 변경 (JPA Dirty Checking으로 자동 업데이트됨)
-        techStack.updateTechStack(request.getCategory(), request.getProficiency());
+        techStack.updateTechStack(request.getCategory(), request.getProficiency(), request.getFreeText());
     }
 
     /**

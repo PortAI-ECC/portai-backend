@@ -17,6 +17,7 @@ public class CareerResponse {
 
     private String duties;
     private String achievements;
+    private String freeText;
 
     public static CareerResponse from(Career career) {
         return CareerResponse.builder()
@@ -27,6 +28,7 @@ public class CareerResponse {
                 .endDate(career.getEndDate())
                 .duties(career.getDuties())
                 .achievements(career.getAchievements())
+                .freeText(career.getFreeText())
                 .build();
     }
 }

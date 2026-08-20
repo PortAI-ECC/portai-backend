@@ -19,6 +19,7 @@ public class TechStackResponse {
     private TechCategory category;
     private Proficiency proficiency;
     private TechSource source;
+    private String freeText;
 
     // Entity를 DTO로 쉽게 변환하기 위한 편의 메서드
     public static TechStackResponse from(TechStack techStack) {
@@ -28,6 +29,7 @@ public class TechStackResponse {
                 .category(techStack.getCategory())
                 .proficiency(techStack.getProficiency())
                 .source(techStack.getSource())
+                .freeText(techStack.getFreeText())
                 .build();
     }
 }

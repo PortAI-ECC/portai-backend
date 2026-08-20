@@ -41,8 +41,12 @@ public class Career {
     @Column(columnDefinition = "TEXT")
     private String achievements;
 
+    @Column(name = "free_text", columnDefinition = "TEXT")
+    private String freeText;
+
     @Builder
-    public Career(User user, String companyName, String position, LocalDate startDate, LocalDate endDate, String duties, String achievements) {
+    public Career(User user, String companyName, String position, LocalDate startDate, LocalDate endDate,
+                  String duties, String achievements, String freeText) {
         this.user = user;
         this.companyName = companyName;
         this.position = position;
@@ -50,15 +54,17 @@ public class Career {
         this.endDate = endDate;
         this.duties = duties;
         this.achievements = achievements;
+        this.freeText = freeText;
     }
 
     // 프론트엔드에서 특정 값만 보냈을 때, 나머지 값이 null로 덮어씌워져 날아가는 것을 방지
-    public void updateCareer(String companyName, String position, LocalDate startDate, LocalDate endDate, String duties, String achievements) {
+    public void updateCareer(String companyName, String position, LocalDate startDate, LocalDate endDate, String duties, String achievements, String freeText) {
         if (companyName != null) this.companyName = companyName;
         if (position != null) this.position = position;
         if (startDate != null) this.startDate = startDate;
         if (endDate != null) this.endDate = endDate;
         if (duties != null) this.duties = duties;
         if (achievements != null) this.achievements = achievements;
+        if (this.freeText != null) this.freeText = this.freeText;
     }
 }

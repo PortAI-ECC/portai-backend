@@ -52,6 +52,7 @@ public class ContestService {
                 .awarded(request.getAwarded())
                 .role(request.getRole())
                 .result(request.getResult())
+                .freeText(request.getFreeText())
                 .build();
 
         return contestRepository.save(contest).getId();
@@ -72,7 +73,8 @@ public class ContestService {
                 request.getEndDate(),
                 request.getAwarded(),
                 request.getRole(),
-                request.getResult()
+                request.getResult(),
+                request.getFreeText()
         );
     }
 

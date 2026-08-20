@@ -70,26 +70,35 @@ public class TechStack {
     @Column(nullable = false)
     private Integer orderIndex = 0;
 
+    // 자유 텍스트 필드
+    @Column(name = "free_text", columnDefinition = "TEXT")
+    private String freeText;
+
     @Builder
-    public TechStack(User user, String name, TechCategory category, Proficiency proficiency, TechSource source, Integer orderIndex) {
+    public TechStack(User user, String name, TechCategory category, Proficiency proficiency,
+                     TechSource source, Integer orderIndex, String freeText) {
         this.user = user;
         this.name = name;
         this.category = (category != null) ? category : TechCategory.OTHER;
         this.proficiency = (proficiency != null) ? proficiency : Proficiency.INTERMEDIATE;
         this.source = (source != null) ? source : TechSource.MANUAL;
         this.orderIndex = (orderIndex != null) ? orderIndex : 0;
+        this.freeText = freeText;
     }
 
 
     /**
      * 기술 스택 정보 수정 (개별 수정 PATCH 용)
      */
-    public void updateTechStack(TechCategory category, Proficiency proficiency) {
+    public void updateTechStack(TechCategory category, Proficiency proficiency, String freeText) {
         if (category != null) {
             this.category = category;
         }
         if (proficiency != null) {
             this.proficiency = proficiency;
+        }
+        if (freeText != null) {
+            this.freeText = freeText;
         }
     }
 

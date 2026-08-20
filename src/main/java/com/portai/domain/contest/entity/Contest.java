@@ -45,8 +45,12 @@ public class Contest {
     @Column(length = 200)
     private String result;
 
+    @Column(name = "free_text", columnDefinition = "TEXT")
+    private String freeText;
+
     @Builder
-    public Contest(User user, String name, String host, LocalDate startDate, LocalDate endDate, Boolean awarded, String role, String result) {
+    public Contest(User user, String name, String host, LocalDate startDate,
+                   LocalDate endDate, Boolean awarded, String role, String result, String freeText) {
         this.user = user;
         this.name = name;
         this.host = host;
@@ -56,10 +60,12 @@ public class Contest {
         this.awarded = awarded != null ? awarded : false;
         this.role = role;
         this.result = result;
+        this.freeText = freeText;
     }
 
     // 부분 수정(PATCH) API를 위한 메서드
-    public void updateContest(String name, String host, LocalDate startDate, LocalDate endDate, Boolean awarded, String role, String result) {
+    public void updateContest(String name, String host, LocalDate startDate,
+                              LocalDate endDate, Boolean awarded, String role, String result, String freeText) {
         // 프론트엔드에서 null을 보낸 항목은 무시하고, 값이 있는(수정 요청된) 항목만 골라서 업데이트
         if (name != null) this.name = name;
         if (host != null) this.host = host;
@@ -68,5 +74,6 @@ public class Contest {
         if (awarded != null) this.awarded = awarded;
         if (role != null) this.role = role;
         if (result != null) this.result = result;
+        if (this.freeText != null) this.freeText = this.freeText;
     }
 }

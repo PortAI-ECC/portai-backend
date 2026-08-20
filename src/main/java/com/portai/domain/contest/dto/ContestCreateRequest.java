@@ -16,4 +16,5 @@ public class ContestCreateRequest {
     private Boolean awarded;     // JSON에서는 "awarded": true/false 형태로 들어옵니다.
     private String role;
     private String result;
+    private String freeText;
 }

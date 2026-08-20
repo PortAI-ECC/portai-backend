@@ -16,6 +16,7 @@ public class ContestResponse {
     private Boolean awarded;
     private String role;
     private String result;
+    private String freeText;
 
     // Entity -> DTO 변환 편의 메서드
     public static ContestResponse from(Contest contest) {
@@ -28,6 +29,7 @@ public class ContestResponse {
                 .awarded(contest.getAwarded())
                 .role(contest.getRole())
                 .result(contest.getResult())
+                .freeText(contest.getFreeText())
                 .build();
     }
 }
