@@ -14,4 +14,5 @@ public class ContestUpdateRequest {
     private Boolean awarded;
     private String role;
     private String result;
+    private String freeText;
 }
