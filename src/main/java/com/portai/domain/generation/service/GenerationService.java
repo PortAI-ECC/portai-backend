@@ -4,6 +4,7 @@ import com.portai.domain.generation.dto.GenerationRequest;
 import com.portai.domain.generation.dto.GenerationResponse;
 import com.portai.domain.generation.dto.GenerationResultResponse;
 import com.portai.domain.generation.dto.GenerationResultUpdateRequest;
+import com.portai.domain.generation.dto.RecordIds;
 import com.portai.domain.generation.entity.Generation;
 import com.portai.domain.generation.entity.GenerationResult;
 import com.portai.domain.generation.entity.GenerationResultType;
@@ -41,7 +42,7 @@ public class GenerationService {
         User user = getUserOrThrow(userId);
         JobPosting jobPosting = getJobPostingOrNull(userId, request.getJobPostingId());
 
-        Generation generation = buildGeneration(user, jobPosting, request.getStyle(), request.getTemplateId(), request.getTypes());
+        Generation generation = buildGeneration(user, jobPosting, request.getStyle(), request.getTemplateId(), request.getRecordIds(), request.getTypes());
         Generation saved = generationRepository.save(generation);
         return new GenerationResponse(saved);
     }
@@ -58,7 +59,7 @@ public class GenerationService {
                 .map(GenerationResult::getType)
                 .collect(Collectors.toList());
 
-        Generation regenerated = buildGeneration(source.getUser(), source.getJobPosting(), source.getStyle(), source.getTemplateId(), types);
+        Generation regenerated = buildGeneration(source.getUser(), source.getJobPosting(), source.getStyle(), source.getTemplateId(), source.getRecordIds(), types);
         Generation saved = generationRepository.save(regenerated);
         return new GenerationResponse(saved);
     }
@@ -111,12 +112,13 @@ public class GenerationService {
         generationRepository.delete(findOwnedGenerationOrThrow(userId, generationId));
     }
 
-    private Generation buildGeneration(User user, JobPosting jobPosting, String style, String templateId, List<GenerationResultType> types) {
+    private Generation buildGeneration(User user, JobPosting jobPosting, String style, String templateId, RecordIds recordIds, List<GenerationResultType> types) {
         Generation generation = Generation.builder()
                 .user(user)
                 .jobPosting(jobPosting)
                 .style(style)
                 .templateId(templateId)
+                .recordIds(recordIds)
                 .build();
 
         // 같은 요청 안에서 유형이 중복되더라도 한 번씩만 생성 (uq_generation_type 제약 위반 방지)
