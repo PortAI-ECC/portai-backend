@@ -39,6 +39,9 @@ public class Activity extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "free_text", columnDefinition = "TEXT")
+    private String freeText;
+
     @Builder
     public Activity(
             User user,
@@ -46,7 +49,8 @@ public class Activity extends BaseEntity {
             LocalDate startDate,
             LocalDate endDate,
             String role,
-            String description
+            String description,
+            String freeText
     ) {
         this.user = user;
         this.name = name;
@@ -54,6 +58,7 @@ public class Activity extends BaseEntity {
         this.endDate = endDate;
         this.role = role;
         this.description = description;
+        this.freeText = freeText;
     }
 
     public void update(
@@ -61,12 +66,14 @@ public class Activity extends BaseEntity {
             LocalDate startDate,
             LocalDate endDate,
             String role,
-            String description
+            String description,
+            String freeText
     ) {
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.role = role;
         this.description = description;
+        this.freeText = freeText;
     }
 }

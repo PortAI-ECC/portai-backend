@@ -20,4 +20,6 @@ public class ActivityRequest {
     private String role;
 
     private String description;
+
+    private String freeText;
 }
