@@ -14,4 +14,5 @@ public class CareerUpdateRequest {
     private LocalDate endDate;
     private String duties;
     private String achievements;
+    private String freeText;
 }

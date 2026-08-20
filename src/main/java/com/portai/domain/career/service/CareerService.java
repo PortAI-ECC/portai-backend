@@ -51,6 +51,7 @@ public class CareerService {
                 .endDate(request.getEndDate())
                 .duties(request.getDuties())
                 .achievements(request.getAchievements())
+                .freeText(request.getFreeText())
                 .build();
 
         return careerRepository.save(career).getId();
@@ -71,7 +72,8 @@ public class CareerService {
                 request.getStartDate(),
                 request.getEndDate(),
                 request.getDuties(),
-                request.getAchievements()
+                request.getAchievements(),
+                request.getFreeText()
         );
     }
 
