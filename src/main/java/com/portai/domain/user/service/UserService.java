@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.portai.global.exception.CustomException;
 import com.portai.global.exception.ErrorCode;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -147,18 +149,32 @@ public class UserService {
         refreshTokenRepository.deleteByUserEmail(email);
     }
 
+
     /**
-     * 게스트(비회원) 임시 세션 생성 로직
+     * 게스트(비회원) 임시 세션 생성 로직 (최종 수정본)
      */
     @Transactional
     public GuestResponse createGuestSession() {
-        // JwtProvider에서 만든 게스트 토큰 생성 메서드 호출 (2시간 만료 기준 7200초)
-        String guestToken = jwtProvider.createGuestToken();
+        // 1. 겹치지 않는 임시 식별자(UUID) 생성 (앞 8자리)
+        String uuid = UUID.randomUUID().toString().substring(0, 8);
+
+        // 2. 임시 유저 엔티티 생성
+        User guestUser = User.builder()
+                .name("게스트_" + uuid)
+                .email("guest_" + uuid + "@portai.temp") // 고유한 임시 이메일
+                .password(UUID.randomUUID().toString())
+                .build();
+
+        // 3. 임시 유저를 DB에 실제로 저장
+        userRepository.save(guestUser);
+
+        // 방금 만든 임시 이메일을 넘겨주어 "USER" 권한을 가진 일반 토큰을 발급받음
+        String accessToken = jwtProvider.createAccessToken(guestUser.getEmail());
 
         return new GuestResponse(
-                "게스트 토큰 발급 성공",
-                guestToken,
-                7200L
+                "게스트 토큰 발급 및 임시 유저 생성 성공",
+                accessToken,
+                7200L // 프론트엔드 반환용 만료 시간
         );
     }
 }
