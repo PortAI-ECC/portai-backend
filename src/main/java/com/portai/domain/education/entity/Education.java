@@ -51,6 +51,9 @@ public class Education extends BaseEntity {
     @Column(name = "expected_graduation")
     private LocalDate expectedGraduation;
 
+    @Column(name = "free_text", columnDefinition = "TEXT")
+    private String freeText;
+
     @Builder
     public Education(
             User user,
@@ -61,7 +64,8 @@ public class Education extends BaseEntity {
             BigDecimal gpaScore,
             BigDecimal gpaScale,
             EducationStatus status,
-            LocalDate expectedGraduation
+            LocalDate expectedGraduation,
+            String freeText
     ) {
         this.user = user;
         this.school = school;
@@ -72,6 +76,7 @@ public class Education extends BaseEntity {
         this.gpaScale = gpaScale;
         this.status = status;
         this.expectedGraduation = expectedGraduation;
+        this.freeText = freeText;
     }
 
     public void update(
@@ -82,7 +87,8 @@ public class Education extends BaseEntity {
             BigDecimal gpaScore,
             BigDecimal gpaScale,
             EducationStatus status,
-            LocalDate expectedGraduation
+            LocalDate expectedGraduation,
+            String freeText
     ) {
         this.school = school;
         this.degree = degree;
@@ -92,5 +98,6 @@ public class Education extends BaseEntity {
         this.gpaScale = gpaScale;
         this.status = status;
         this.expectedGraduation = expectedGraduation;
+        this.freeText = freeText;
     }
 }

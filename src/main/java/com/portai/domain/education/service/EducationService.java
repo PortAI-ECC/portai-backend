@@ -39,6 +39,7 @@ public class EducationService {
                 .gpaScale(request.getGpaScale())
                 .status(request.getStatus())
                 .expectedGraduation(request.getExpectedGraduation())
+                .freeText(request.getFreeText())
                 .build();
 
         Education saved = educationRepository.save(education);
@@ -75,7 +76,8 @@ public class EducationService {
                 request.getGpaScore(),
                 request.getGpaScale(),
                 request.getStatus(),
-                request.getExpectedGraduation()
+                request.getExpectedGraduation(),
+                request.getFreeText()
         );
 
         return EducationResponse.from(education);
