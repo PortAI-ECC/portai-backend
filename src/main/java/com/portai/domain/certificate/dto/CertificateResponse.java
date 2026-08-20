@@ -16,6 +16,7 @@ public class CertificateResponse {
     private LocalDate acquiredDate;
     private LocalDate expiryDate;
     private String score;
+    private String freeText;
 
     public static CertificateResponse from(Certificate certificate) {
         return CertificateResponse.builder()
@@ -25,6 +26,7 @@ public class CertificateResponse {
                 .acquiredDate(certificate.getAcquiredDate())
                 .expiryDate(certificate.getExpiryDate())
                 .score(certificate.getScore())
+                .freeText(certificate.getFreeText())
                 .build();
     }
 }

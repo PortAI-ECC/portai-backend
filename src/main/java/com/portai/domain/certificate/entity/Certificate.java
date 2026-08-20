@@ -39,6 +39,9 @@ public class Certificate extends BaseEntity {
     @Column(length = 50)
     private String score;
 
+    @Column(name = "free_text", columnDefinition = "TEXT")
+    private String freeText;
+
     @Builder
     public Certificate(
             User user,
@@ -46,7 +49,8 @@ public class Certificate extends BaseEntity {
             String issuer,
             LocalDate acquiredDate,
             LocalDate expiryDate,
-            String score
+            String score,
+            String freeText
     ) {
         this.user = user;
         this.name = name;
@@ -54,6 +58,7 @@ public class Certificate extends BaseEntity {
         this.acquiredDate = acquiredDate;
         this.expiryDate = expiryDate;
         this.score = score;
+        this.freeText = freeText;
     }
 
     public void update(
@@ -61,12 +66,14 @@ public class Certificate extends BaseEntity {
             String issuer,
             LocalDate acquiredDate,
             LocalDate expiryDate,
-            String score
+            String score,
+            String freeText
     ) {
         this.name = name;
         this.issuer = issuer;
         this.acquiredDate = acquiredDate;
         this.expiryDate = expiryDate;
         this.score = score;
+        this.freeText = freeText;
     }
 }

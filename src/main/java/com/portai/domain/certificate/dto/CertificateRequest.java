@@ -20,4 +20,6 @@ public class CertificateRequest {
     private LocalDate expiryDate;
 
     private String score;
+
+    private String freeText;
 }

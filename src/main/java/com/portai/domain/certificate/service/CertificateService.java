@@ -36,6 +36,7 @@ public class CertificateService {
                 .acquiredDate(request.getAcquiredDate())
                 .expiryDate(request.getExpiryDate())
                 .score(request.getScore())
+                .freeText(request.getFreeText())
                 .build();
 
         Certificate saved = certificateRepository.save(certificate);
@@ -69,7 +70,8 @@ public class CertificateService {
                 request.getIssuer(),
                 request.getAcquiredDate(),
                 request.getExpiryDate(),
-                request.getScore()
+                request.getScore(),
+                request.getFreeText()
         );
 
         return CertificateResponse.from(certificate);
