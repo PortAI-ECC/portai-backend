@@ -15,6 +15,7 @@ public class ActivityResponse {
     private final LocalDate endDate;
     private final String role;
     private final String description;
+    private final String freeText;
     private final LocalDateTime createdAt;
 
     public ActivityResponse(Activity activity) {
@@ -24,6 +25,7 @@ public class ActivityResponse {
         this.endDate = activity.getEndDate();
         this.role = activity.getRole();
         this.description = activity.getDescription();
+        this.freeText = activity.getFreeText();
         this.createdAt = activity.getCreatedAt();
     }
 }

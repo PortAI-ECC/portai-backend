@@ -35,6 +35,7 @@ public class ActivityService {
                 .endDate(request.getEndDate())
                 .role(request.getRole())
                 .description(request.getDescription())
+                .freeText(request.getFreeText())
                 .build();
 
         Activity saved = activityRepository.save(activity);
@@ -70,7 +71,8 @@ public class ActivityService {
                 request.getStartDate(),
                 request.getEndDate(),
                 request.getRole(),
-                request.getDescription()
+                request.getDescription(),
+                request.getFreeText()
         );
 
         return new ActivityResponse(activity);
