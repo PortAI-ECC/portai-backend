@@ -18,6 +18,7 @@ public class GenerationResponse {
     private final Long jobPostingId;
     private final String style;
     private final String templateId;
+    private final RecordIds recordIds;
     private final GenerationOverallStatus overallStatus;
     private final LocalDateTime createdAt;
     private final List<GenerationResultResponse> results;
@@ -27,6 +28,7 @@ public class GenerationResponse {
         this.jobPostingId = generation.getJobPosting() != null ? generation.getJobPosting().getId() : null;
         this.style = generation.getStyle();
         this.templateId = generation.getTemplateId();
+        this.recordIds = generation.getRecordIds();
         this.overallStatus = generation.getOverallStatus();
         this.createdAt = generation.getCreatedAt();
         this.results = generation.getResults().stream()

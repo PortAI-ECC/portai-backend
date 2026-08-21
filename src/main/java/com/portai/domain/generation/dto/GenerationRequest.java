@@ -25,4 +25,7 @@ public class GenerationRequest {
 
     @NotEmpty(message = "생성할 결과물 유형을 최소 1개 이상 선택해야 합니다.")
     private List<GenerationResultType> types;
+
+    // 생성 결과물에 포함할 기록을 분야별로 지정 (미지정 시 null - 서비스에서 기본 정책 처리)
+    private RecordIds recordIds;
 }
