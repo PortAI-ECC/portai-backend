@@ -22,6 +22,7 @@ public class EducationResponse {
     private BigDecimal gpaScale;
     private EducationStatus status;
     private LocalDate expectedGraduation;
+    private String freeText;
 
     public static EducationResponse from(Education education) {
         return EducationResponse.builder()
@@ -34,6 +35,7 @@ public class EducationResponse {
                 .gpaScale(education.getGpaScale())
                 .status(education.getStatus())
                 .expectedGraduation(education.getExpectedGraduation())
+                .freeText(education.getFreeText())
                 .build();
     }
 }

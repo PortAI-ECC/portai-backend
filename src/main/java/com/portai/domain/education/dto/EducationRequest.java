@@ -29,4 +29,6 @@ public class EducationRequest {
     private EducationStatus status;
 
     private LocalDate expectedGraduation;
+
+    private String freeText;
 }
