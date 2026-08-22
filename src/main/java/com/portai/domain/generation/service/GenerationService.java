@@ -15,7 +15,11 @@ import com.portai.domain.user.entity.User;
 import com.portai.domain.user.repository.UserRepository;
 import com.portai.global.exception.CustomException;
 import com.portai.global.exception.ErrorCode;
+import com.portai.infra.llmclient.LlmClient;
+import com.portai.infra.llmclient.LlmClientException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,29 +32,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GenerationService {
 
+    private static final Logger log = LoggerFactory.getLogger(GenerationService.class);
+
     private final GenerationRepository generationRepository;
     private final UserRepository userRepository;
     private final JobPostingRepository jobPostingRepository;
+    private final LlmClient llmClient;
+    private final PromptBuilder promptBuilder;
+    private final UserContextAggregator userContextAggregator;
 
-    /**
-     * 결과물 생성 요청 등록.
-     * 요청받은 유형(RESUME, PORTFOLIO 등)마다 GenerationResult를 하나씩 만들어두고,
-     * 실제 LLM 호출은 infra/llmclient 연동 후 비동기로 채워지도록 status만 IN_PROGRESS로 시작한다.
-     */
     @Transactional
     public GenerationResponse createGeneration(Long userId, GenerationRequest request) {
         User user = getUserOrThrow(userId);
         JobPosting jobPosting = getJobPostingOrNull(userId, request.getJobPostingId());
 
-        Generation generation = buildGeneration(user, jobPosting, request.getStyle(), request.getTemplateId(), request.getRecordIds(), request.getTypes());
+        Generation generation = buildGeneration(user, jobPosting, request.getStyle(),
+                request.getTemplateId(), request.getRecordIds(), request.getTypes());
         Generation saved = generationRepository.save(generation);
+
+        processResults(saved);
+
         return new GenerationResponse(saved);
     }
 
-    /**
-     * 동일 조건 재생성 - 기존 생성 요청의 jobPosting/style/결과물 유형을 그대로 이어받아
-     * 새 생성 이력을 하나 더 만든다 (기존 이력은 그대로 보존).
-     */
     @Transactional
     public GenerationResponse regenerate(Long userId, Long generationId) {
         Generation source = findOwnedGenerationOrThrow(userId, generationId);
@@ -59,8 +63,12 @@ public class GenerationService {
                 .map(GenerationResult::getType)
                 .collect(Collectors.toList());
 
-        Generation regenerated = buildGeneration(source.getUser(), source.getJobPosting(), source.getStyle(), source.getTemplateId(), source.getRecordIds(), types);
+        Generation regenerated = buildGeneration(source.getUser(), source.getJobPosting(), source.getStyle(),
+                source.getTemplateId(), source.getRecordIds(), types);
         Generation saved = generationRepository.save(regenerated);
+
+        processResults(saved);
+
         return new GenerationResponse(saved);
     }
 
@@ -82,9 +90,6 @@ public class GenerationService {
         return new GenerationResponse(findOwnedGenerationOrThrow(userId, generationId));
     }
 
-    /**
-     * 생성 결과물 중 특정 유형을 사용자가 직접 수정 (본인 소유만 가능)
-     */
     @Transactional
     public GenerationResponse editResult(Long userId, Long generationId, GenerationResultType type,
                                           GenerationResultUpdateRequest request) {
@@ -96,7 +101,6 @@ public class GenerationService {
 
     /**
      * 결과물 파일 다운로드용 데이터 조회 (본인 소유만 가능).
-     * 실제 파일(fileUrl)이 아직 없는 상태(자리표시자)라면 컨트롤러에서 content를 텍스트 파일로 변환해 내려준다.
      */
     @Transactional(readOnly = true)
     public GenerationResultResponse getResultForDownload(Long userId, Long generationId, GenerationResultType type) {
@@ -104,15 +108,47 @@ public class GenerationService {
         return new GenerationResultResponse(findResultOrThrow(generation, type));
     }
 
-    /**
-     * 생성 이력 삭제 (결과물도 cascade로 함께 삭제, 본인 소유만 가능)
-     */
     @Transactional
     public void deleteGeneration(Long userId, Long generationId) {
         generationRepository.delete(findOwnedGenerationOrThrow(userId, generationId));
     }
 
-    private Generation buildGeneration(User user, JobPosting jobPosting, String style, String templateId, RecordIds recordIds, List<GenerationResultType> types) {
+    /**
+     * generation에 딸린 각 GenerationResult에 대해 실제 LLM을 호출하고
+     * 성공하면 COMPLETED + content, 실패하면 FAILED + fail_reason으로 반영한다.
+     */
+    private void processResults(Generation generation) {
+        String userContext = userContextAggregator.buildUserContext(generation.getUser().getId());
+        String jobPostingText = null; // TODO: jobPosting 있으면 요구/우대 스킬 텍스트로 구성해서 채우기
+
+        for (GenerationResult result : generation.getResults()) {
+            try {
+                String prompt = promptBuilder.buildPrompt(generation.getStyle(), result.getType(), userContext, jobPostingText);
+                String content = llmClient.generateText(prompt);
+                result.complete(content, null);
+
+            } catch (LlmClientException e) {
+                log.error("generation_result 생성 실패. generationId={}, type={}", generation.getId(), result.getType(), e);
+                result.fail(truncate(e.getMessage()));
+            } catch (Exception e) {
+                log.error("예상치 못한 오류로 generation_result 생성 실패. generationId={}, type={}",
+                        generation.getId(), result.getType(), e);
+                result.fail(truncate("알 수 없는 오류가 발생했습니다."));
+            }
+        }
+
+        generation.refreshOverallStatus();
+    }
+
+    private String truncate(String reason) {
+        if (reason == null) {
+            return null;
+        }
+        return reason.length() > 100 ? reason.substring(0, 100) : reason;
+    }
+
+    private Generation buildGeneration(User user, JobPosting jobPosting, String style,
+                                        String templateId, RecordIds recordIds, List<GenerationResultType> types) {
         Generation generation = Generation.builder()
                 .user(user)
                 .jobPosting(jobPosting)
@@ -121,7 +157,6 @@ public class GenerationService {
                 .recordIds(recordIds)
                 .build();
 
-        // 같은 요청 안에서 유형이 중복되더라도 한 번씩만 생성 (uq_generation_type 제약 위반 방지)
         Set<GenerationResultType> distinctTypes = new LinkedHashSet<>(types);
         for (GenerationResultType type : distinctTypes) {
             generation.addResult(GenerationResult.builder().type(type).build());
