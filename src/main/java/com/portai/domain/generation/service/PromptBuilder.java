@@ -6,7 +6,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class PromptBuilder {
 
-    public String buildSystemPrompt(String style, GenerationResultType type) {
+    public String buildPrompt(String style, GenerationResultType type, String userContext, String jobPostingText) {
+        String systemPrompt = buildSystemPrompt(style, type);
+        String userPrompt = buildUserPrompt(userContext, jobPostingText);
+        return systemPrompt + "\n\n" + userPrompt;
+    }
+
+    private String buildSystemPrompt(String style, GenerationResultType type) {
         String styleInstruction = switch (style == null ? "CONCISE" : style) {
             case "JUNIOR_DEVELOPER" -> "신입 개발자다운 배우려는 태도와 성장 가능성을 강조하는 문체로 작성하라.";
             case "DATA_ANALYST" -> "데이터 기반 의사결정과 정량적 성과를 강조하는 문체로 작성하라.";
@@ -35,7 +41,7 @@ public class PromptBuilder {
                 """.formatted(type.name(), typeInstruction, styleInstruction);
     }
 
-    public String buildUserPrompt(String userContext, String jobPostingText) {
+    private String buildUserPrompt(String userContext, String jobPostingText) {
         StringBuilder sb = new StringBuilder();
         sb.append("[사용자 경험 데이터]\n").append(userContext).append("\n\n");
 

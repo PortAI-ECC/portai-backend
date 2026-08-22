@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -13,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -29,11 +31,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 2. 토큰이 존재하고, 유효한(조작되지 않은) 토큰인지 검사
         if (token != null && jwtProvider.validateToken(token)) {
 
-            String email = jwtProvider.getEmailFromToken(token);
+            // 토큰의 Subject(이메일 또는 GUEST_uuid) 추출
+            String principal = jwtProvider.getEmailFromToken(token);
+
+            // 게스트 토큰인지 일반 유저 토큰인지에 따라 Spring Security 권한(Role) 부여
+            List<SimpleGrantedAuthority> authorities;
+            if (jwtProvider.isGuestToken(token)) {
+                authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_GUEST"));
+            } else {
+                authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+            }
 
             // 3. 증명서 만들고 서버(SecurityContext)에 등록
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
+                    new UsernamePasswordAuthenticationToken(principal, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

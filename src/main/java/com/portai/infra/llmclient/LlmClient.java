@@ -1,18 +1,17 @@
-package com.portai.infra.llmclient; // TODO: 실제 패키지명으로 변경
+package com.portai.infra.llmclient;
 
 /**
- * LLM 제공자(OpenAI, Claude 등)를 추상화하는 인터페이스.
- * 나중에 다른 LLM으로 바꾸거나 provider를 여러 개 둬야 할 때
- * 이 인터페이스만 구현체를 갈아끼우면 됨.
+ * LLM 호출 공통 인터페이스.
+ * 각 도메인(generations, job-postings, projects, 그리고 공모전/인턴경력/기술스택/자격증/교육/활동이력)에서
+ * 이 인터페이스만 주입받아서 사용하면 됨.
+ * 실제 LLM(OpenAI 등) 연동은 OpenAiClient가 담당하고, 로컬/테스트에서는 MockLlmClient가 대신 동작함.
  */
 public interface LlmClient {
 
     /**
-     * 주어진 프롬프트로 LLM을 호출하고 텍스트 응답을 반환한다.
-     *
-     * @param systemPrompt 시스템 지시문 (문체, 역할 등)
-     * @param userPrompt   실제 생성 요청 내용 (사용자 데이터 기반으로 구성된 프롬프트)
-     * @return LLM이 생성한 텍스트
+     * 프롬프트를 받아서 LLM이 생성한 텍스트를 리턴.
+     * @param prompt 각 도메인에서 만든 프롬프트
+     * @return LLM이 생성한 결과 텍스트
      */
-    String generate(String systemPrompt, String userPrompt);
+    String generateText(String prompt);
 }

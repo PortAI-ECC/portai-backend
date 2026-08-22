@@ -4,6 +4,7 @@ import com.portai.domain.generation.dto.GenerationRequest;
 import com.portai.domain.generation.dto.GenerationResponse;
 import com.portai.domain.generation.dto.GenerationResultResponse;
 import com.portai.domain.generation.dto.GenerationResultUpdateRequest;
+import com.portai.domain.generation.dto.RecordIds;
 import com.portai.domain.generation.entity.Generation;
 import com.portai.domain.generation.entity.GenerationResult;
 import com.portai.domain.generation.entity.GenerationResultType;
@@ -45,7 +46,8 @@ public class GenerationService {
         User user = getUserOrThrow(userId);
         JobPosting jobPosting = getJobPostingOrNull(userId, request.getJobPostingId());
 
-        Generation generation = buildGeneration(user, jobPosting, request.getStyle(), request.getTypes());
+        Generation generation = buildGeneration(user, jobPosting, request.getStyle(),
+                request.getTemplateId(), request.getRecordIds(), request.getTypes());
         Generation saved = generationRepository.save(generation);
 
         processResults(saved);
@@ -61,7 +63,8 @@ public class GenerationService {
                 .map(GenerationResult::getType)
                 .collect(Collectors.toList());
 
-        Generation regenerated = buildGeneration(source.getUser(), source.getJobPosting(), source.getStyle(), types);
+        Generation regenerated = buildGeneration(source.getUser(), source.getJobPosting(), source.getStyle(),
+                source.getTemplateId(), source.getRecordIds(), types);
         Generation saved = generationRepository.save(regenerated);
 
         processResults(saved);
@@ -69,12 +72,20 @@ public class GenerationService {
         return new GenerationResponse(saved);
     }
 
+    /**
+     * 내 생성 이력 목록 조회 (최신순)
+     */
+    @Transactional(readOnly = true)
     public List<GenerationResponse> getMyGenerations(Long userId) {
         return generationRepository.findAllByUserIdOrderByCreatedAtDesc(userId).stream()
                 .map(GenerationResponse::new)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 생성 결과 상세 조회 (결과물 목록 포함, 본인 소유만 가능)
+     */
+    @Transactional(readOnly = true)
     public GenerationResponse getGeneration(Long userId, Long generationId) {
         return new GenerationResponse(findOwnedGenerationOrThrow(userId, generationId));
     }
@@ -88,6 +99,10 @@ public class GenerationService {
         return new GenerationResponse(generation);
     }
 
+    /**
+     * 결과물 파일 다운로드용 데이터 조회 (본인 소유만 가능).
+     */
+    @Transactional(readOnly = true)
     public GenerationResultResponse getResultForDownload(Long userId, Long generationId, GenerationResultType type) {
         Generation generation = findOwnedGenerationOrThrow(userId, generationId);
         return new GenerationResultResponse(findResultOrThrow(generation, type));
@@ -98,16 +113,18 @@ public class GenerationService {
         generationRepository.delete(findOwnedGenerationOrThrow(userId, generationId));
     }
 
+    /**
+     * generation에 딸린 각 GenerationResult에 대해 실제 LLM을 호출하고
+     * 성공하면 COMPLETED + content, 실패하면 FAILED + fail_reason으로 반영한다.
+     */
     private void processResults(Generation generation) {
         String userContext = userContextAggregator.buildUserContext(generation.getUser().getId());
-        String jobPostingText = null;
+        String jobPostingText = null; // TODO: jobPosting 있으면 요구/우대 스킬 텍스트로 구성해서 채우기
 
         for (GenerationResult result : generation.getResults()) {
             try {
-                String systemPrompt = promptBuilder.buildSystemPrompt(generation.getStyle(), result.getType());
-                String userPrompt = promptBuilder.buildUserPrompt(userContext, jobPostingText);
-
-                String content = llmClient.generate(systemPrompt, userPrompt);
+                String prompt = promptBuilder.buildPrompt(generation.getStyle(), result.getType(), userContext, jobPostingText);
+                String content = llmClient.generateText(prompt);
                 result.complete(content, null);
 
             } catch (LlmClientException e) {
@@ -130,11 +147,14 @@ public class GenerationService {
         return reason.length() > 100 ? reason.substring(0, 100) : reason;
     }
 
-    private Generation buildGeneration(User user, JobPosting jobPosting, String style, List<GenerationResultType> types) {
+    private Generation buildGeneration(User user, JobPosting jobPosting, String style,
+                                        String templateId, RecordIds recordIds, List<GenerationResultType> types) {
         Generation generation = Generation.builder()
                 .user(user)
                 .jobPosting(jobPosting)
                 .style(style)
+                .templateId(templateId)
+                .recordIds(recordIds)
                 .build();
 
         Set<GenerationResultType> distinctTypes = new LinkedHashSet<>(types);

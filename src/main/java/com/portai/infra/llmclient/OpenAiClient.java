@@ -1,4 +1,4 @@
-package com.portai.infra.llmclient; // TODO: 실제 패키지명으로 변경
+package com.portai.infra.llmclient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,12 +17,7 @@ import java.time.Duration;
 
 /**
  * OpenAI Chat Completions API를 호출하는 LlmClient 구현체.
- *
- * 추가 Gradle 의존성 없이 Java 17 내장 java.net.http.HttpClient를 사용함.
- * Jackson(ObjectMapper)은 spring-boot-starter-web에 이미 포함되어 있어서 별도 추가 불필요.
- *
  * llm.provider=openai 일 때만 빈으로 등록됨 (application.yml 참고).
- * 로컬 개발 중에는 기본값(mock)이라 이 클라이언트가 아예 안 뜨고 API 호출/비용이 발생하지 않음.
  */
 @Component
 @ConditionalOnProperty(prefix = "llm", name = "provider", havingValue = "openai")
@@ -42,9 +37,9 @@ public class OpenAiClient implements LlmClient {
     }
 
     @Override
-    public String generate(String systemPrompt, String userPrompt) {
+    public String generateText(String prompt) {
         try {
-            String requestBody = buildRequestBody(systemPrompt, userPrompt);
+            String requestBody = buildRequestBody(prompt);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(properties.getBaseUrl() + "/chat/completions"))
@@ -58,8 +53,7 @@ public class OpenAiClient implements LlmClient {
 
             if (response.statusCode() != 200) {
                 log.error("OpenAI API 호출 실패. status={}, body={}", response.statusCode(), response.body());
-                throw new LlmClientException(
-                        "OpenAI API 호출 실패 (status=" + response.statusCode() + ")");
+                throw new LlmClientException("OpenAI API 호출 실패 (status=" + response.statusCode() + ")");
             }
 
             return extractContent(response.body());
@@ -72,7 +66,7 @@ public class OpenAiClient implements LlmClient {
         }
     }
 
-    private String buildRequestBody(String systemPrompt, String userPrompt) {
+    private String buildRequestBody(String prompt) {
         ObjectNode root = objectMapper.createObjectNode();
         root.put("model", properties.getModel());
 
@@ -80,11 +74,11 @@ public class OpenAiClient implements LlmClient {
 
         ObjectNode systemMessage = messages.addObject();
         systemMessage.put("role", "system");
-        systemMessage.put("content", systemPrompt);
+        systemMessage.put("content", "너는 이공계 취업준비생의 커리어 문서 작성을 돕는 어시스턴트다. 제공된 정보 안에서만 사실대로 작성한다.");
 
         ObjectNode userMessage = messages.addObject();
         userMessage.put("role", "user");
-        userMessage.put("content", userPrompt);
+        userMessage.put("content", prompt);
 
         root.put("temperature", 0.7);
 

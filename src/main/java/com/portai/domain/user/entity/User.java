@@ -35,10 +35,9 @@ public class User {
     @Column(name = "intro_one_liner", length = 200)
     private String introOneLiner;
 
-    // DB에는 문자열(VARCHAR)로 저장되도록 EnumType.STRING 설정
-    @Enumerated(EnumType.STRING)
+    // @Enumerated(EnumType.STRING) 삭제 및 String으로 변경
     @Column(name = "desired_job")
-    private DesiredJob desiredJob;
+    private String desiredJob;
 
     @Column(name = "desired_company", length = 100)
     private String desiredCompany;
@@ -54,11 +53,25 @@ public class User {
 
     // 회원가입 시 처음에 데이터를 집어넣기 위한 Builder
     @Builder
-    public User(String name, String email, String password, String phone, DesiredJob desiredJob) {
+    public User(String name, String email, String password, String phone) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.phone = phone;
-        this.desiredJob = desiredJob;
+    }
+
+    public void updateProfile(String phone, String introOneLiner, String desiredJob, String desiredCompany) {
+        if (phone != null) {
+            this.phone = phone;
+        }
+        if (introOneLiner != null) {
+            this.introOneLiner = introOneLiner;
+        }
+        if (desiredJob != null) {
+            this.desiredJob = desiredJob;
+        }
+        if (desiredCompany != null) {
+            this.desiredCompany = desiredCompany;
+        }
     }
 }

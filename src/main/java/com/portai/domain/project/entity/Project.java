@@ -25,7 +25,7 @@ public class Project extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "name", nullable = false, length = 100)
     private String title;
 
     @Column(columnDefinition = "TEXT")
@@ -59,5 +59,10 @@ public class Project extends BaseEntity {
         this.startDate = startDate;
         this.endDate = endDate;
         this.githubUrl = githubUrl;
+    }
+
+    // AI 설명 생성 결과 반영 (사용자가 직접 수정한 description을 덮어쓰는 것이므로 명시적으로 분리)
+    public void applyGeneratedDescription(String generatedDescription) {
+        this.description = generatedDescription;
     }
 }

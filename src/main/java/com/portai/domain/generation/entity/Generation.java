@@ -1,5 +1,6 @@
 package com.portai.domain.generation.entity;
 
+import com.portai.domain.generation.dto.RecordIds;
 import com.portai.domain.jobposting.entity.JobPosting;
 import com.portai.domain.user.entity.User;
 import com.portai.global.common.BaseEntity;
@@ -35,6 +36,15 @@ public class Generation extends BaseEntity {
     @Column(length = 30)
     private String style;
 
+    // REQ-026: 사용자가 선택한 포트폴리오 템플릿 (프론트 TEMPLATES 목록의 id, 예: "template-1")
+    @Column(name = "template_id", length = 50)
+    private String templateId;
+    
+    // 결과물 생성에 포함할 기록을 분야별로 지정 (contests/careers/certificates/education/techStacks/activities)
+    @Convert(converter = RecordIdsJsonConverter.class)
+    @Column(name = "record_ids", columnDefinition = "JSON")
+    private RecordIds recordIds;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "overall_status", nullable = false, length = 20)
     private GenerationOverallStatus overallStatus;
@@ -44,10 +54,12 @@ public class Generation extends BaseEntity {
     private final List<GenerationResult> results = new ArrayList<>();
 
     @Builder
-    public Generation(User user, JobPosting jobPosting, String style) {
+    public Generation(User user, JobPosting jobPosting, String style, String templateId, RecordIds recordIds) {
         this.user = user;
         this.jobPosting = jobPosting;
         this.style = style;
+        this.templateId = templateId;
+        this.recordIds = recordIds;
         this.overallStatus = GenerationOverallStatus.IN_PROGRESS;
     }
 
