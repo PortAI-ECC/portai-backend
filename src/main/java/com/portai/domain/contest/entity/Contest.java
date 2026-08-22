@@ -74,6 +74,6 @@ public class Contest {
         if (awarded != null) this.awarded = awarded;
         if (role != null) this.role = role;
         if (result != null) this.result = result;
-        if (this.freeText != null) this.freeText = this.freeText;
+        if (freeText != null) this.freeText = freeText;
     }
 }
