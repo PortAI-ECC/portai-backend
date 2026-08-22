@@ -42,3 +42,12 @@ jwt:
   secret: vmfldptmxhzhfhtkfkdgoqnwkdudnjsgkfRjdi12345!@#
   expiration_time: 1800000 # Access Token 수명: 30분 (1800000밀리초)
   refresh_expiration_time: 1209600000 # Refresh Token 수명: 14일 (1209600000밀리초)
+
+llm:
+  provider: mock
+
+openai:
+  api-key: ${OPENAI_API_KEY:}
+  model: gpt-5.6-luna
+  base-url: https://api.openai.com/v1
+  timeout-seconds: 30
