@@ -42,7 +42,7 @@ public class ProjectService {
 
         Project project = Project.builder()
                 .user(user)
-                .title(request.getTitle())
+                .title(request.getName())
                 .description(request.getDescription())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
@@ -79,7 +79,7 @@ public class ProjectService {
         validateOwner(project, userId);
 
         project.update(
-                request.getTitle(),
+                request.getName(),
                 request.getDescription(),
                 request.getStartDate(),
                 request.getEndDate(),
