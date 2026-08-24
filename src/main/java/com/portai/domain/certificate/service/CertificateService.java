@@ -8,6 +8,7 @@ import com.portai.domain.user.entity.User;
 import com.portai.domain.user.repository.UserRepository;
 import com.portai.global.exception.CustomException;
 import com.portai.global.exception.ErrorCode;
+import com.portai.infra.llmclient.LlmClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +22,14 @@ public class CertificateService {
 
     private final CertificateRepository certificateRepository;
     private final UserRepository userRepository;
+    private final LlmClient llmClient;
 
     // 자격증 등록
     @Transactional
-    public CertificateResponse createCertificate(Long userId, CertificateRequest request) {
+    public CertificateResponse createCertificate(
+            Long userId,
+            CertificateRequest request
+    ) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED));
@@ -88,7 +93,47 @@ public class CertificateService {
         certificateRepository.delete(certificate);
     }
 
+    /**
+     * 자격증 AI 초안 생성
+     */
+    @Transactional(readOnly = true)
+    public String generateCertificateDescription(Long userId, Long certId) {
+
+        Certificate certificate = findCertificateOrThrow(certId);
+
+        validateOwner(certificate, userId);
+
+        String prompt = String.format(
+                "너는 전문 이력서 컨설턴트야. 다음 자격증 데이터를 바탕으로 포트폴리오에 들어갈 3~4줄짜리 역량 중심 요약 초안을 작성해줘. 제공되지 않은 사실은 임의로 만들지 마.\n" +
+                        "- 자격증명: %s\n" +
+                        "- 발급기관: %s\n" +
+                        "- 취득일: %s\n" +
+                        "- 만료일: %s\n" +
+                        "- 점수 또는 등급: %s\n" +
+                        "- 작성한 메모(자유텍스트): %s",
+                certificate.getName(),
+                certificate.getIssuer() != null
+                        ? certificate.getIssuer()
+                        : "없음",
+                certificate.getAcquiredDate() != null
+                        ? certificate.getAcquiredDate().toString()
+                        : "없음",
+                certificate.getExpiryDate() != null
+                        ? certificate.getExpiryDate().toString()
+                        : "없음",
+                certificate.getScore() != null
+                        ? certificate.getScore()
+                        : "없음",
+                certificate.getFreeText() != null
+                        ? certificate.getFreeText()
+                        : "없음"
+        );
+
+        return llmClient.generateText(prompt);
+    }
+
     private Certificate findCertificateOrThrow(Long certId) {
+
         return certificateRepository.findById(certId)
                 .orElseThrow(() ->
                         new CustomException(ErrorCode.CERTIFICATE_NOT_FOUND));

@@ -6,9 +6,11 @@ import com.portai.domain.education.service.EducationService;
 import com.portai.global.annotation.AuthUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,5 +57,23 @@ public class EducationController {
             @PathVariable Long eduId
     ) {
         educationService.deleteEducation(userId, eduId);
+    }
+
+    /**
+     * 학력 AI 초안 생성
+     * POST /api/education/{eduId}/description/generate
+     */
+    @PostMapping("/{eduId}/description/generate")
+    public ResponseEntity<Map<String, String>> generateDescription(
+            @AuthUser Long userId,
+            @PathVariable Long eduId
+    ) {
+
+        String generatedText =
+                educationService.generateEducationDescription(userId, eduId);
+
+        return ResponseEntity.ok(Map.of(
+                "generatedDescription", generatedText
+        ));
     }
 }

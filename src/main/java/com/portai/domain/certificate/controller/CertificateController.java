@@ -6,9 +6,11 @@ import com.portai.domain.certificate.service.CertificateService;
 import com.portai.global.annotation.AuthUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -58,5 +60,26 @@ public class CertificateController {
                 userId,
                 certId
         );
+    }
+
+    /**
+     * 자격증 AI 초안 생성
+     * POST /api/certificates/{certId}/description/generate
+     */
+    @PostMapping("/{certId}/description/generate")
+    public ResponseEntity<Map<String, String>> generateDescription(
+            @AuthUser Long userId,
+            @PathVariable Long certId
+    ) {
+
+        String generatedText =
+                certificateService.generateCertificateDescription(
+                        userId,
+                        certId
+                );
+
+        return ResponseEntity.ok(Map.of(
+                "generatedDescription", generatedText
+        ));
     }
 }

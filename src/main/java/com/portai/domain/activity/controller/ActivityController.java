@@ -3,11 +3,14 @@ package com.portai.domain.activity.controller;
 import com.portai.domain.activity.dto.ActivityRequest;
 import com.portai.domain.activity.dto.ActivityResponse;
 import com.portai.domain.activity.service.ActivityService;
+import com.portai.global.annotation.AuthUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -60,5 +63,26 @@ public class ActivityController {
                 userId,
                 activityId
         );
+    }
+
+    /**
+     * 활동이력 AI 초안 생성
+     * POST /activities/{activityId}/description/generate
+     */
+    @PostMapping("/{activityId}/description/generate")
+    public ResponseEntity<Map<String, String>> generateDescription(
+            @AuthUser Long userId,
+            @PathVariable Long activityId
+    ) {
+
+        String generatedText =
+                activityService.generateActivityDescription(
+                        userId,
+                        activityId
+                );
+
+        return ResponseEntity.ok(Map.of(
+                "generatedDescription", generatedText
+        ));
     }
 }
