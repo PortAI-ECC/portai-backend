@@ -88,4 +88,21 @@ public class CareerController {
                 "message", "경력이 삭제되었습니다."
         ));
     }
+
+    /**
+     * 5. 인턴/경력 AI 초안 생성
+     */
+    @PostMapping("/{careerId}/description/generate")
+    public ResponseEntity<Map<String, String>> generateDescription(
+            @AuthUser Long userId,
+            @PathVariable Long careerId) {
+
+        // 서비스 로직 실행 (AI 응답 텍스트 반환)
+        String generatedText = careerService.generateCareerDescription(userId, careerId);
+
+        // 생성된 텍스트를 응답
+        return ResponseEntity.ok(Map.of(
+                "generatedDescription", generatedText
+        ));
+    }
 }

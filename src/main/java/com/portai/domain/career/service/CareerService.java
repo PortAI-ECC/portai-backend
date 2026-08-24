@@ -1,5 +1,6 @@
 package com.portai.domain.career.service;
 
+import com.portai.infra.llmclient.LlmClient;
 import com.portai.domain.career.dto.CareerCreateRequest;
 import com.portai.domain.career.dto.CareerResponse;
 import com.portai.domain.career.dto.CareerUpdateRequest;
@@ -23,6 +24,7 @@ public class CareerService {
 
     private final CareerRepository careerRepository;
     private final UserRepository userRepository;
+    private final LlmClient llmClient;
 
     /**
      * 1. 인턴/경력 목록 조회 (GET)
@@ -86,5 +88,29 @@ public class CareerService {
                 .orElseThrow(() -> new CustomException(ErrorCode.CAREER_NOT_FOUND));
 
         careerRepository.delete(career);
+    }
+
+    /**
+     * 5. 인턴/경력 AI 초안 생성 (LLM 연동)
+     */
+    public String generateCareerDescription(Long userId, Long careerId) {
+        Career career = careerRepository.findByIdAndUserId(careerId, userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CAREER_NOT_FOUND));
+
+        String prompt = String.format(
+                "너는 전문 이력서 컨설턴트야. 다음 인턴/경력 데이터를 바탕으로 포트폴리오에 들어갈 3~4줄짜리 성과 중심 요약 초안을 작성해줘.\n" +
+                        "- 회사명: %s\n" +
+                        "- 직무: %s\n" +
+                        "- 주요업무: %s\n" +
+                        "- 성과: %s\n" +
+                        "- 작성한 메모(자유텍스트): %s",
+                career.getCompanyName(),
+                career.getPosition(),
+                career.getDuties() != null ? career.getDuties() : "없음",
+                career.getAchievements() != null ? career.getAchievements() : "없음",
+                career.getFreeText() != null ? career.getFreeText() : "없음"
+        );
+
+        return llmClient.generateText(prompt);
     }
 }

@@ -78,4 +78,21 @@ public class ContestController {
                 "message", "공모전 이력이 삭제되었습니다."
         ));
     }
+
+    /**
+     * 5. 공모전 AI 초안 생성
+     */
+    @PostMapping("/{contestId}/description/generate")
+    public ResponseEntity<Map<String, String>> generateDescription(
+            @AuthUser Long userId,
+            @PathVariable Long contestId) {
+
+        // 서비스 로직 실행 (AI 응답 텍스트 반환)
+        String generatedText = contestService.generateContestDescription(userId, contestId);
+
+        // 생성된 텍스트를 응답
+        return ResponseEntity.ok(Map.of(
+                "generatedDescription", generatedText
+        ));
+    }
 }

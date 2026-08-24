@@ -65,6 +65,6 @@ public class Career {
         if (endDate != null) this.endDate = endDate;
         if (duties != null) this.duties = duties;
         if (achievements != null) this.achievements = achievements;
-        if (this.freeText != null) this.freeText = this.freeText;
+        if (freeText != null) this.freeText = freeText;
     }
 }

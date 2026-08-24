@@ -103,4 +103,22 @@ public class TechStackController {
         // 성공 시 데이터 없이 상태 코드 200만 반환
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * 6. 기술 스택 AI 초안 생성
+     * [POST] /api/tech-stacks/{skillId}/description/generate
+     */
+    @PostMapping("/{skillId}/description/generate")
+    public ResponseEntity<Map<String, String>> generateDescription(
+            @AuthUser Long userId,
+            @PathVariable Long skillId) {
+
+        // 서비스 로직 실행 (AI 응답 텍스트 반환)
+        String generatedText = techStackService.generateTechStackDescription(userId, skillId);
+
+        // 생성된 텍스트를 응답
+        return ResponseEntity.ok(Map.of(
+                "generatedDescription", generatedText
+        ));
+    }
 }
