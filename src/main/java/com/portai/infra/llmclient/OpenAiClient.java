@@ -18,6 +18,9 @@ import java.time.Duration;
 /**
  * OpenAI Chat Completions API를 호출하는 LlmClient 구현체.
  * llm.provider=openai 일 때만 빈으로 등록됨 (application.yml 참고).
+ *
+ * 주의: gpt-5.6 계열은 추론(reasoning) 모델이라 temperature 등 샘플링 파라미터를
+ * 커스텀 값으로 보내면 400 에러가 남. 그래서 temperature는 아예 보내지 않음.
  */
 @Component
 @ConditionalOnProperty(prefix = "llm", name = "provider", havingValue = "openai")
@@ -50,13 +53,17 @@ public class OpenAiClient implements LlmClient {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            String body = response.body();
 
             if (response.statusCode() != 200) {
-                log.error("OpenAI API 호출 실패. status={}, body={}", response.statusCode(), response.body());
-                throw new LlmClientException("OpenAI API 호출 실패 (status=" + response.statusCode() + ")");
+                // 로그 라인이 잘려도 원인을 알 수 있도록 body 길이와 전체 내용을 별도 줄로 남김
+                log.error("OpenAI API 호출 실패. status={}", response.statusCode());
+                log.error("OpenAI 응답 본문 (length={}): {}", body == null ? -1 : body.length(), body);
+                throw new LlmClientException(
+                        "OpenAI API 호출 실패 (status=" + response.statusCode() + ", body=" + body + ")");
             }
 
-            return extractContent(response.body());
+            return extractContent(body);
 
         } catch (LlmClientException e) {
             throw e;
@@ -80,7 +87,8 @@ public class OpenAiClient implements LlmClient {
         userMessage.put("role", "user");
         userMessage.put("content", prompt);
 
-        root.put("temperature", 0.7);
+        // gpt-5.6 계열(추론 모델)은 temperature 커스텀 값을 지원하지 않아 400이 남.
+        // 그래서 temperature 파라미터는 아예 넣지 않음 (기본값 사용).
 
         return root.toString();
     }
