@@ -10,4 +10,6 @@ public class ProfileUpdateRequest {
     private String introOneLiner;
     private String desiredJob;
     private String desiredCompany;
+
+    private String profileImageUrl;
 }

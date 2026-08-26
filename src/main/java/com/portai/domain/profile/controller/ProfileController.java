@@ -5,8 +5,10 @@ import com.portai.domain.profile.dto.ProfileUpdateRequest;
 import com.portai.domain.profile.service.ProfileService;
 import com.portai.global.annotation.AuthUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType; //  MediaType import 추가
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile; //  MultipartFile import 추가
 
 import java.util.Map;
 
@@ -42,5 +44,21 @@ public class ProfileController {
 
         // 명세서와 동일하게 성공 메시지 반환
         return ResponseEntity.ok(Map.of("message", "프로필이 성공적으로 수정되었습니다."));
+    }
+
+    /**
+     *  프로필 이미지 업로드
+     * POST /api/profile/image
+     */
+    @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, String>> uploadProfileImage(
+            @AuthUser Long userId,
+            @RequestPart("file") MultipartFile file) { // 폼 데이터의 'file' 키로 넘어오는 파일 수신
+
+        // 서비스 로직 실행 (이미지 저장 후 URL 반환)
+        String profileImageUrl = profileService.uploadProfileImage(userId, file);
+
+        // 명세서에 맞춰 profileImageUrl 필드로 반환
+        return ResponseEntity.ok(Map.of("profileImageUrl", profileImageUrl));
     }
 }

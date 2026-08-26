@@ -19,6 +19,8 @@ public enum ErrorCode {
     FILE_STORAGE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일 저장 중 오류가 발생했습니다."),
     FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다."),
 
+    EMPTY_FILE(HttpStatus.BAD_REQUEST, "이미지 파일이 존재하지 않습니다."),
+
     // ===== 인증/세션 (윤지) =====
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
