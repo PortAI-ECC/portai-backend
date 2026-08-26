@@ -42,6 +42,9 @@ public class User {
     @Column(name = "desired_company", length = 100)
     private String desiredCompany;
 
+    @Column(name = "profile_image_url", length = 500)
+    private String profileImageUrl;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -60,7 +63,11 @@ public class User {
         this.phone = phone;
     }
 
-    public void updateProfile(String phone, String introOneLiner, String desiredJob, String desiredCompany) {
+    public void updateProfileImage(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public void updateProfile(String phone, String introOneLiner, String desiredJob, String desiredCompany, String profileImageUrl) {
         if (phone != null) {
             this.phone = phone;
         }
@@ -72,6 +79,9 @@ public class User {
         }
         if (desiredCompany != null) {
             this.desiredCompany = desiredCompany;
+        }
+        if (profileImageUrl != null) {
+            this.profileImageUrl = profileImageUrl;
         }
     }
 }

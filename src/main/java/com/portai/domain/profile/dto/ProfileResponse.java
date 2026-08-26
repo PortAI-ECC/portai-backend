@@ -15,4 +15,6 @@ public class ProfileResponse {
     private String introOneLiner;
     private String desiredJob;
     private String desiredCompany;
+
+    private String profileImageUrl;
 }
