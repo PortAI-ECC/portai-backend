@@ -119,7 +119,7 @@ public class GenerationService {
      */
     private void processResults(Generation generation) {
         String userContext = userContextAggregator.buildUserContext(generation.getUser().getId());
-        String jobPostingText = null; // TODO: jobPosting 있으면 요구/우대 스킬 텍스트로 구성해서 채우기
+        String jobPostingText = buildJobPostingText(generation.getJobPosting());
 
         for (GenerationResult result : generation.getResults()) {
             try {
@@ -139,7 +139,60 @@ public class GenerationService {
 
         generation.refreshOverallStatus();
     }
+    /**
+     * 선택한 채용공고 정보를 LLM 프롬프트에 전달할 텍스트로 변환한다.
+     */
+    private String buildJobPostingText(JobPosting jobPosting) {
 
+        if (jobPosting == null) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("- 채용공고 ID: ")
+                .append(jobPosting.getId())
+                .append("\n");
+
+        if (jobPosting.getSourceType() != null) {
+            sb.append("- 등록 방식: ")
+                    .append(jobPosting.getSourceType().name())
+                    .append("\n");
+        }
+
+        if (jobPosting.getSourceValue() != null
+                && !jobPosting.getSourceValue().isBlank()) {
+            sb.append("- 공고 URL 또는 파일: ")
+                    .append(jobPosting.getSourceValue())
+                    .append("\n");
+        }
+
+        if (jobPosting.getRequiredSkills() != null
+                && !jobPosting.getRequiredSkills().isEmpty()) {
+            sb.append("- 필수 기술: ")
+                    .append(String.join(
+                            ", ",
+                            jobPosting.getRequiredSkills()))
+                    .append("\n");
+        }
+
+        if (jobPosting.getPreferredSkills() != null
+                && !jobPosting.getPreferredSkills().isEmpty()) {
+            sb.append("- 우대 기술: ")
+                    .append(String.join(
+                            ", ",
+                            jobPosting.getPreferredSkills()))
+                    .append("\n");
+        }
+
+        if (jobPosting.getMatchScore() != null) {
+            sb.append("- 기존 매칭 점수: ")
+                    .append(jobPosting.getMatchScore())
+                    .append("\n");
+        }
+
+        return sb.toString();
+    }
     private String truncate(String reason) {
         if (reason == null) {
             return null;
