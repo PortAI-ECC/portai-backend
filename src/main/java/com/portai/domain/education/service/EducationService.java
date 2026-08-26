@@ -8,6 +8,7 @@ import com.portai.domain.user.entity.User;
 import com.portai.domain.user.repository.UserRepository;
 import com.portai.global.exception.CustomException;
 import com.portai.global.exception.ErrorCode;
+import com.portai.infra.llmclient.LlmClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ public class EducationService {
 
     private final EducationRepository educationRepository;
     private final UserRepository userRepository;
+    private final LlmClient llmClient;
 
     // 교육 이력 등록
     @Transactional
@@ -94,7 +96,58 @@ public class EducationService {
         educationRepository.delete(education);
     }
 
+    /**
+     * 학력 AI 초안 생성
+     */
+    @Transactional(readOnly = true)
+    public String generateEducationDescription(Long userId, Long eduId) {
+
+        Education education = findEducationOrThrow(eduId);
+
+        validateOwner(education, userId);
+
+        String prompt = String.format(
+                "너는 전문 이력서 컨설턴트야. 다음 학력 데이터를 바탕으로 포트폴리오에 들어갈 3~4줄짜리 역량 중심 요약 초안을 작성해줘.\n" +
+                        "- 학교명: %s\n" +
+                        "- 학위: %s\n" +
+                        "- 전공: %s\n" +
+                        "- 복수전공: %s\n" +
+                        "- 학점: %s / %s\n" +
+                        "- 재학 상태: %s\n" +
+                        "- 졸업 예정일: %s\n" +
+                        "- 작성한 메모(자유텍스트): %s",
+                education.getSchool(),
+                education.getDegree() != null
+                        ? education.getDegree().name()
+                        : "없음",
+                education.getMajor() != null
+                        ? education.getMajor()
+                        : "없음",
+                education.getDoubleMajor() != null
+                        ? education.getDoubleMajor()
+                        : "없음",
+                education.getGpaScore() != null
+                        ? education.getGpaScore().toString()
+                        : "없음",
+                education.getGpaScale() != null
+                        ? education.getGpaScale().toString()
+                        : "없음",
+                education.getStatus() != null
+                        ? education.getStatus().name()
+                        : "없음",
+                education.getExpectedGraduation() != null
+                        ? education.getExpectedGraduation().toString()
+                        : "없음",
+                education.getFreeText() != null
+                        ? education.getFreeText()
+                        : "없음"
+        );
+
+        return llmClient.generateText(prompt);
+    }
+
     private Education findEducationOrThrow(Long eduId) {
+
         return educationRepository.findById(eduId)
                 .orElseThrow(() ->
                         new CustomException(ErrorCode.EDUCATION_NOT_FOUND));
