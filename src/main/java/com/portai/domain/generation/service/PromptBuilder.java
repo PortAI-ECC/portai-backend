@@ -13,12 +13,12 @@ public class PromptBuilder {
     }
 
     private String buildSystemPrompt(String style, GenerationResultType type) {
+
         String styleInstruction = switch (style == null ? "CONCISE" : style) {
-            case "JUNIOR_DEVELOPER" -> "신입 개발자다운 배우려는 태도와 성장 가능성을 강조하는 문체로 작성하라.";
-            case "DATA_ANALYST" -> "데이터 기반 의사결정과 정량적 성과를 강조하는 문체로 작성하라.";
-            case "RESEARCHER" -> "논리적 문제 정의와 검증 과정을 강조하는 문체로 작성하라.";
-            case "STARTUP_STYLE" -> "빠른 실행력과 주도성을 강조하는 캐주얼한 문체로 작성하라.";
-            case "ENTERPRISE" -> "격식있고 신뢰감 있는 문체로 작성하라.";
+            case "CONCISE" -> "군더더기 없이 핵심만 명확하게 전달하는 간결한 문체로 작성하라.";
+            case "DETAILED" -> "상황, 과정, 행동, 결과를 아주 구체적이고 상세하게 풀어쓰는 문체로 작성하라.";
+            case "FORMAL" -> "격식 있고 정중하며 신뢰감을 주는 전문적인 문체로 작성하라.";
+            case "CASUAL" -> "딱딱하지 않고 부드러우며 읽기 편한 자연스러운 문체로 작성하라.";
             default -> "군더더기 없이 간결한 문체로 작성하라.";
         };
 
