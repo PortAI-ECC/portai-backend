@@ -36,14 +36,16 @@ public class SecurityConfig {
                 // CorsConfigurationSource 빈(WebConfig)을 그대로 사용
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                // CORS 프리플라이트 요청은 인증 없이 통과
-                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                // 인증(Auth)과 관련된 모든 주소(회원가입, 로그인, 로그아웃, 토큰 갱신, 게스트)는 누구나 접근 가능하도록 개방
-                                .requestMatchers("/api/auth/**").permitAll()
-                                // 스웨거 UI와 API 문서 접근 허용
-                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "swagger-ui.html").permitAll()
-                                // 나머지 주소는 로그인해야만 접근 가능
-                                .anyRequest().authenticated()
+                        // CORS 프리플라이트 요청은 인증 없이 통과
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // 인증(Auth)과 관련된 모든 주소(회원가입, 로그인, 로그아웃, 토큰 갱신, 게스트)는 누구나 접근 가능하도록 개방
+                        .requestMatchers("/api/auth/**").permitAll()
+                        // 스웨거 UI와 API 문서 접근 허용
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "swagger-ui.html").permitAll()
+                        // 업로드된 이미지 파일 경로는 토큰(인증) 검사 없이 통과시키기
+                        .requestMatchers("/uploads/**").permitAll()
+                        // 나머지 주소는 로그인해야만 접근 가능
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
